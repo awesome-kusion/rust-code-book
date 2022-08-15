@@ -1,0 +1,20 @@
+# https://giscus.app
+# https://github.com/badboy/mdbook-mermaid
+
+[book]
+title = "Rust源码剖析"
+authors = ["Rust生爱好者"]
+description = "通过分析代码学习Rust"
+language = "zh"
+multilingual = false
+src = "."
+
+[build]
+build-dir = "docs"
+
+[output.html]
+additional-css = []
+additional-js = []
+git-repository-url = "https://github.com/awesome-kusion/rust-code-book"
+edit-url-template = "https://github.com/awesome-kusion/rust-code-book/edit/master/{path}"
+git-repository-icon = "fa-github"

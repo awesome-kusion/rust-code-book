@@ -2,7 +2,7 @@ default:
 	mdbook serve
 
 build:
-	-rm docs
+	-rm -r docs
 	mdbook build
 	-rm docs/.gitignore
 	-rm -rf docs/.git

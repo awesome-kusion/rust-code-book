@@ -15,5 +15,8 @@
     - [WASM包管理](rust-tools/wasm/readme.md)
   - [Lint工具](rust-tools/lint/readme.md)
     - [Lint 与 LintPass](rust-tools/lint/lint-pass.md)
+    - [CombinedLintPass](lint/combinedlintpass.md)
+    - [Rustc Lint 执行流程]
+    - [Visitor 模式]
 
 - [Rust开源项目](open-source/readme.md)

@@ -14,3 +14,7 @@
 - 微信群: 
 
 ![wechat](wechat.png)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=awesome-kusion/rust-code-book&type=Date)](https://star-history.com/#awesome-kusion/rust-code-book&Date)

@@ -16,5 +16,5 @@ build-dir = "docs"
 additional-css = []
 additional-js = []
 git-repository-url = "https://github.com/awesome-kusion/rust-code-book"
-edit-url-template = "https://github.com/awesome-kusion/rust-code-book/edit/master/{path}"
+edit-url-template = "https://github.com/awesome-kusion/rust-code-book/edit/main/{path}"
 git-repository-icon = "fa-github"

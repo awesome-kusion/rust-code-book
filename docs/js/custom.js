@@ -1,9 +1,9 @@
 // https://giscus.app
 
 const data_repo = "awesome-kusion/rust-code-book";
-const data_repo_id = "MDEwOlJlcG9zaXRvcnk2MTUzMTQ2Mw==";
+const data_repo_id = "R_kgDOH0lTxA";
 const data_category = "General";
-const data_category_id = "DIC_kwDOA6rlR84CQnJW";
+const data_category_id = "MDE4OkRpc2N1c3Npb25DYXRlZ29yeTI1MDUzMjQ3";
 
 var initAll = function () {
     var path = window.location.pathname;

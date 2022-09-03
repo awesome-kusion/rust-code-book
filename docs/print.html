@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Rust源码剖析</a></li><li class="chapter-item expanded affix "><a href="preface.html">前言</a></li><li class="chapter-item expanded "><a href="rustc/index.html"><strong aria-hidden="true">1.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/basic/index.html"><strong aria-hidden="true">1.1.</strong> 基础结构</a></li><li class="chapter-item expanded "><a href="rustc/lexer/index.html"><strong aria-hidden="true">1.2.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="rustc/parser/index.html"><strong aria-hidden="true">1.3.</strong> 语法分析</a></li><li class="chapter-item expanded "><a href="rustc/checker/index.html"><strong aria-hidden="true">1.4.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/checker/lint/index.html"><strong aria-hidden="true">1.4.1.</strong> Lint工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/checker/lint/lint-pass.html"><strong aria-hidden="true">1.4.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="rustc/checker/lint/combinedlintpass.html"><strong aria-hidden="true">1.4.1.2.</strong> CombinedLintPass</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rustc/ir/index.html"><strong aria-hidden="true">1.5.</strong> 中间代码表示</a></li></ol></li><li class="chapter-item expanded "><a href="rust-tools/index.html"><strong aria-hidden="true">2.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rust-tools/cargo/index.html"><strong aria-hidden="true">2.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/wasm/index.html"><strong aria-hidden="true">2.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/clippy/index.html"><strong aria-hidden="true">2.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="open-source/index.html"><strong aria-hidden="true">3.</strong> Rust开源项目</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Rust源码剖析</a></li><li class="chapter-item expanded affix "><a href="preface.html">前言</a></li><li class="chapter-item expanded "><a href="rustc/index.html"><strong aria-hidden="true">1.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/basic/index.html"><strong aria-hidden="true">1.1.</strong> 基础结构</a></li><li class="chapter-item expanded "><a href="rustc/lexer/index.html"><strong aria-hidden="true">1.2.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="rustc/parser/index.html"><strong aria-hidden="true">1.3.</strong> 语法分析</a></li><li class="chapter-item expanded "><a href="rustc/checker/index.html"><strong aria-hidden="true">1.4.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/checker/lint/index.html"><strong aria-hidden="true">1.4.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/checker/lint/lint-pass.html"><strong aria-hidden="true">1.4.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="rustc/checker/lint/combinedlintpass.html"><strong aria-hidden="true">1.4.1.2.</strong> CombinedLintPass</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rustc/ir/index.html"><strong aria-hidden="true">1.5.</strong> 中间代码表示</a></li></ol></li><li class="chapter-item expanded "><a href="rust-tools/index.html"><strong aria-hidden="true">2.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rust-tools/cargo/index.html"><strong aria-hidden="true">2.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/wasm/index.html"><strong aria-hidden="true">2.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/clippy/index.html"><strong aria-hidden="true">2.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="open-source/index.html"><strong aria-hidden="true">3.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="open-source/KCLVM/index.html"><strong aria-hidden="true">3.1.</strong> KCLVM</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -147,25 +147,27 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="rust源码剖析-中文版"><a class="header" href="#rust源码剖析-中文版">Rust源码剖析 中文版</a></h1>
-<p>目标：针对 Rust 语言本身和开源库的代码进行分析。</p>
-<p><img src="cover.jpg" alt="" /></p>
+<p>目标：学习分析 Rust 编译器（Rustc）、标准库、开源项目源代码。</p>
+<p><img src="cover.jpg" alt="cover" /></p>
 <ul>
 <li>代码仓库: <a href="https://github.com/awesome-kusion/rust-code-book">https://github.com/awesome-kusion/rust-code-book</a></li>
 <li>在线阅读: <a href="https://awesome-kusion.github.io/rust-code-book">https://awesome-kusion.github.io/rust-code-book</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="前言"><a class="header" href="#前言">前言</a></h1>
+<p>写这个电子书是因为一开始在做 KusionStack、KCLVM 项目中编译器研发的相关工作，本着学习优秀编译器的设计想法，开始学习 Rustc 的源码。这个过程中记录了一些笔记和文档，在<a href="https://github.com/chai2010">柴大</a>鼓励下整理成文章正式发在了公众号上。没想到很受欢迎，于是决定坚持写下去。书中会写一些 Rustc 中的源码实现、标准库、工具，以及一些 Rust 的开源项目（比如 👉 <a href="https://github.com/KusionStack/kusio">KusionStack</a> 👉 <a href="https://github.com/KusionStack/KCLVM">KCLVM</a>）。</p>
+<p>这些文章中的内容大部分是我阅读源码时的一些记录和个人理解，以及 rust-dev-guide 中对应的一些描述。本人水平有限，所以可能会有一些不准确甚至错误的地方，也欢迎大家提 PR/Issue/Discussion，或者加群讨论。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust编译器"><a class="header" href="#rust编译器">Rust编译器</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="基础结构"><a class="header" href="#基础结构">基础结构</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="词法分析"><a class="header" href="#词法分析">词法分析</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="语法分析"><a class="header" href="#语法分析">语法分析</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="语义分析"><a class="header" href="#语义分析">语义分析</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="lint-工具"><a class="header" href="#lint-工具">Lint 工具</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lint"><a class="header" href="#lint">Lint</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="lint-与-lintpass"><a class="header" href="#lint-与-lintpass">Lint 与 LintPass</a></h1>
 <h2 id="背景"><a class="header" href="#背景">背景</a></h2>
 <p>在 <a href="https://github.com/KusionStack/kusion">KusionStack</a> 技术栈中， KCL 配置策略语言是重要的组成部分之一。为了帮助用户更好的编写 KCL 代码，我们也为 KCL 语言开发了一些语言工具，Lint 就是其中一种。Lint 工具帮助用户检查代码中潜在的问题和错误，同时也可以用于自动化的代码检查，保障仓库代码规范和质量。因为 KCL 语言由 Rust 实现，一些功能也学习和参考了 Rustc。本文是在学习 Rustc 过程中的一些思考和沉淀，在这里做一些分享。</p>
 <h3 id="rustc"><a class="header" href="#rustc">Rustc</a></h3>
 <p>Rustc 是 Rust Compiler 的简称，即 Rust 编程语言的编译器。Rust 的编译器是自举的，即 Rustc 由 Rust 语言编写而成，可以通过旧版本编译出新版本。因此，Rustc 可以说是用 Rust 语言编写编译器的最佳实践。</p>
-<h3 id="lint-工具-1"><a class="header" href="#lint-工具-1">Lint 工具</a></h3>
+<h3 id="lint-工具"><a class="header" href="#lint-工具">Lint 工具</a></h3>
 <p>Lint 是代码静态分析工具的一种，最早是来源于 C 语言。Lint 工具通常会检查代码中潜在的问题和错误，包括（但不限于）编程风格（缩进、空行、空格）、代码质量（定义未使用的变量、文档缺失）以及错误代码（除0错误、重复定义、循环引用）等问题。通常来说，Lint 工具除了标识错误外，还会带有一定的 fix/refactor suggest 和 auto-fix 的能力。在工程中引入 Lint 工具可以有效的减少错误，提高整体的工程质量。此外，对一种编程语言来说，Lint 工具通常也是其他工具研发的前置条件，例如 IDE 插件的错误提示，CI 的 Pipeline 检测等。</p>
 <h2 id="lint-vs-lintpass"><a class="header" href="#lint-vs-lintpass">Lint vs. LintPass</a></h2>
 <h3 id="概念与关系"><a class="header" href="#概念与关系">概念与关系</a></h3>
@@ -787,6 +789,11 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wasm包管理"><a class="header" href="#wasm包管理">WASM包管理</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="clippy"><a class="header" href="#clippy">Clippy</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust开源项目"><a class="header" href="#rust开源项目">Rust开源项目</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kclvm"><a class="header" href="#kclvm">KCLVM</a></h1>
+<ul>
+<li><em>KusionStack一站式可编程配置技术栈(Go实现): <a href="https://github.com/KusionStack/kusion">https://github.com/KusionStack/kusion</a></em></li>
+<li><em>KusionStack内置的KCL配置语言(Rust实现): <a href="https://github.com/KusionStack/KCLVM">https://github.com/KusionStack/KCLVM</a></em></li>
+</ul>
 
                     </main>
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Clippy - Rust源码剖析</title>
+        <title>KCLVM - Rust源码剖析</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../index.html">Rust源码剖析</a></li><li class="chapter-item expanded affix "><a href="../../preface.html">前言</a></li><li class="chapter-item expanded "><a href="../../rustc/index.html"><strong aria-hidden="true">1.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/basic/index.html"><strong aria-hidden="true">1.1.</strong> 基础结构</a></li><li class="chapter-item expanded "><a href="../../rustc/lexer/index.html"><strong aria-hidden="true">1.2.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="../../rustc/parser/index.html"><strong aria-hidden="true">1.3.</strong> 语法分析</a></li><li class="chapter-item expanded "><a href="../../rustc/checker/index.html"><strong aria-hidden="true">1.4.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/checker/lint/index.html"><strong aria-hidden="true">1.4.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/checker/lint/lint-pass.html"><strong aria-hidden="true">1.4.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="../../rustc/checker/lint/combinedlintpass.html"><strong aria-hidden="true">1.4.1.2.</strong> CombinedLintPass</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../rustc/ir/index.html"><strong aria-hidden="true">1.5.</strong> 中间代码表示</a></li></ol></li><li class="chapter-item expanded "><a href="../../rust-tools/index.html"><strong aria-hidden="true">2.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rust-tools/cargo/index.html"><strong aria-hidden="true">2.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="../../rust-tools/wasm/index.html"><strong aria-hidden="true">2.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="../../rust-tools/clippy/index.html" class="active"><strong aria-hidden="true">2.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="../../open-source/index.html"><strong aria-hidden="true">3.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../open-source/KCLVM/index.html"><strong aria-hidden="true">3.1.</strong> KCLVM</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../index.html">Rust源码剖析</a></li><li class="chapter-item expanded affix "><a href="../../preface.html">前言</a></li><li class="chapter-item expanded "><a href="../../rustc/index.html"><strong aria-hidden="true">1.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/basic/index.html"><strong aria-hidden="true">1.1.</strong> 基础结构</a></li><li class="chapter-item expanded "><a href="../../rustc/lexer/index.html"><strong aria-hidden="true">1.2.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="../../rustc/parser/index.html"><strong aria-hidden="true">1.3.</strong> 语法分析</a></li><li class="chapter-item expanded "><a href="../../rustc/checker/index.html"><strong aria-hidden="true">1.4.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/checker/lint/index.html"><strong aria-hidden="true">1.4.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/checker/lint/lint-pass.html"><strong aria-hidden="true">1.4.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="../../rustc/checker/lint/combinedlintpass.html"><strong aria-hidden="true">1.4.1.2.</strong> CombinedLintPass</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../rustc/ir/index.html"><strong aria-hidden="true">1.5.</strong> 中间代码表示</a></li></ol></li><li class="chapter-item expanded "><a href="../../rust-tools/index.html"><strong aria-hidden="true">2.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rust-tools/cargo/index.html"><strong aria-hidden="true">2.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="../../rust-tools/wasm/index.html"><strong aria-hidden="true">2.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="../../rust-tools/clippy/index.html"><strong aria-hidden="true">2.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="../../open-source/index.html"><strong aria-hidden="true">3.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../open-source/KCLVM/index.html" class="active"><strong aria-hidden="true">3.1.</strong> KCLVM</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -119,7 +119,7 @@
                         <a href="https://github.com/awesome-kusion/rust-code-book" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./rust-tools/clippy/readme.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./open-source/KCLVM/readme.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -148,19 +148,20 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="clippy"><a class="header" href="#clippy">Clippy</a></h1>
+                        <h1 id="kclvm"><a class="header" href="#kclvm">KCLVM</a></h1>
+<ul>
+<li><em>KusionStack一站式可编程配置技术栈(Go实现): <a href="https://github.com/KusionStack/kusion">https://github.com/KusionStack/kusion</a></em></li>
+<li><em>KusionStack内置的KCL配置语言(Rust实现): <a href="https://github.com/KusionStack/KCLVM">https://github.com/KusionStack/KCLVM</a></em></li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../rust-tools/wasm/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../open-source/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../../open-source/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -168,13 +169,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../rust-tools/wasm/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../open-source/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../../open-source/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

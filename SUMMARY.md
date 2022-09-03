@@ -8,7 +8,7 @@
   - [词法分析](rustc/lexer/readme.md)
   - [语法分析](rustc/parser/readme.md)
   - [语义分析](rustc/checker/readme.md)
-    - [Lint工具](rustc/checker/lint/readme.md)
+    - [Lint](rustc/checker/lint/readme.md)
       - [Lint 与 LintPass](rustc/checker/lint/lint-pass.md)
       - [CombinedLintPass](rustc/checker/lint/combinedlintpass.md)
   - [中间代码表示](rustc/ir/readme.md)
@@ -19,3 +19,4 @@
   - [Clippy](rust-tools/clippy/readme.md)
 
 - [Rust开源项目](open-source/readme.md)
+  - [KCLVM](open-source/KCLVM/readme.md)

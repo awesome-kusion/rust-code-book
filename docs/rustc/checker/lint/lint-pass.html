@@ -30,17 +30,19 @@
         <link rel="stylesheet" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../style.css">
+
 
     </head>
     <body>
         <!-- Provide site root to javascript -->
-        <script>
+        <script type="text/javascript">
             var path_to_root = "../../../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script>
+        <script type="text/javascript">
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -56,7 +58,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script>
+        <script type="text/javascript">
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -68,7 +70,7 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script>
+        <script type="text/javascript">
             var html = document.querySelector('html');
             var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
@@ -138,7 +140,7 @@
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script>
+                <script type="text/javascript">
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -147,7 +149,16 @@
                 </script>
 
                 <div id="content" class="content">
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
                     <main>
+                        <!-- 头部 -->
+                        <ul dir="auto">
+                        <li><em>KusonStack一站式可编程配置技术栈(Go): <a href="https://github.com/KusionStack/kusion">https://github.com/KusionStack/kusion</a></em></li>
+                        <li><em>KCL 配置编程语言(Rust): <a href="https://github.com/KusionStack/KCLVM">https://github.com/KusionStack/KCLVM</a></em></li>
+                        </ul>
+                        <hr>
+
                         <h1 id="lint-与-lintpass"><a class="header" href="#lint-与-lintpass">Lint 与 LintPass</a></h1>
 <h2 id="背景"><a class="header" href="#背景">背景</a></h2>
 <p>在 <a href="https://github.com/KusionStack/kusion">KusionStack</a> 技术栈中， KCL 配置策略语言是重要的组成部分之一。为了帮助用户更好的编写 KCL 代码，我们也为 KCL 语言开发了一些语言工具，Lint 就是其中一种。Lint 工具帮助用户检查代码中潜在的问题和错误，同时也可以用于自动化的代码检查，保障仓库代码规范和质量。因为 KCL 语言由 Rust 实现，一些功能也学习和参考了 Rustc。本文是在学习 Rustc 过程中的一些思考和沉淀，在这里做一些分享。</p>
@@ -376,6 +387,14 @@ for c in crates{
 <li>Rust Clippy: <a href="https://github.com/rust-lang/rust-clippy">https://github.com/rust-lang/rust-clippy</a></li>
 </ul>
 
+
+                        <!-- 公众号 -->
+                        <hr>
+
+                        <div id="giscus-container"></div>
+                        <footer class="page-footer">
+                            <span>© 2015-2016 | <a href="https://github.com/gopl-zh"> Go语言圣经中文版</a>, 仅学习交流使用</span>
+                        </footer>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -408,20 +427,26 @@ for c in crates{
 
 
 
-        <script>
+        <script type="text/javascript">
             window.playground_copyable = true;
         </script>
 
 
-        <script src="../../../elasticlunr.min.js" charset="utf-8"></script>
-        <script src="../../../mark.min.js" charset="utf-8"></script>
-        <script src="../../../searcher.js" charset="utf-8"></script>
+        <script src="../../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../searcher.js" type="text/javascript" charset="utf-8"></script>
 
-        <script src="../../../clipboard.min.js" charset="utf-8"></script>
-        <script src="../../../highlight.js" charset="utf-8"></script>
-        <script src="../../../book.js" charset="utf-8"></script>
+        <script src="../../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "rustc/checker/lint/lint-pass.md"
+        </script>
+
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../../js/custom.js"></script>
+        <script type="text/javascript" src="../../../js/bigPicture.js"></script>
 
 
     </body>

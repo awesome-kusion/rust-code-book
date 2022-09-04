@@ -38,9 +38,9 @@ KCLVM 是我们在 Kusion 这个项目中使用 Rust 开发的语言编译器，
     - [EarlyLint](rustc/parser/early-lint/readme.md)
   - [语义分析](rustc/sema/readme.md)
     - [Lint](rustc/sema/lint/readme.md)
-      - [Lint 与 LintPass](rustc/hir-lowering/lint/lint-pass.md) &#x2705;
-      - [CombinedLintPass](rustc/hir-lowering/lint/combinedlintpass.md) &#x2705;
-      - [Lint 执行流程[WIP]](rustc/hir-lowering/lint/lint.md)  &#x1F552;
+      - [Lint 与 LintPass](rustc/sema/lint/lint-pass.md) &#x2705;
+      - [CombinedLintPass](rustc/sema/lint/combinedlintpass.md) &#x2705;
+      - [Lint 执行流程[WIP]](rustc/sema/lint/lint.md)  &#x1F552;
     - [Resolver](rustc/sema/resovler/readme.md)
     - [HIR lowering](rustc/sema/hir-lowering/readme.md)
       - [类型推导](rustc/sema/hir-lowering/type-inference/readme.md)

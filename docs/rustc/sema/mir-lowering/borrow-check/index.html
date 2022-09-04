@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>前言 - Rust源码剖析</title>
+        <title>Borrow checking - Rust源码剖析</title>
 
 
         <!-- Custom HTML head -->
@@ -13,31 +13,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../../favicon.png">
+        <link rel="stylesheet" href="../../../../css/variables.css">
+        <link rel="stylesheet" href="../../../../css/general.css">
+        <link rel="stylesheet" href="../../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../../../../highlight.css">
+        <link rel="stylesheet" href="../../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="../../../../style.css">
 
 
     </head>
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "";
+            var path_to_root = "../../../../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Rust源码剖析</a></li><li class="chapter-item expanded affix "><a href="preface.html" class="active">前言</a></li><li class="chapter-item expanded "><a href="rustc/index.html"><strong aria-hidden="true">1.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/overview/index.html"><strong aria-hidden="true">1.1.</strong> 概述</a></li><li class="chapter-item expanded "><a href="rustc/lexer/index.html"><strong aria-hidden="true">1.2.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="rustc/parser/index.html"><strong aria-hidden="true">1.3.</strong> 语法分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/parser/ast/index.html"><strong aria-hidden="true">1.3.1.</strong> 抽象语法树</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/parser/ast/ast.html"><strong aria-hidden="true">1.3.1.1.</strong> 抽象语法书结构</a></li><li class="chapter-item expanded "><a href="rustc/parser/ast/visitor.html"><strong aria-hidden="true">1.3.1.2.</strong> 访问者模式</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rustc/sema/index.html"><strong aria-hidden="true">1.4.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/lint/index.html"><strong aria-hidden="true">1.4.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/hir-lowering/lint/lint-pass.html"><strong aria-hidden="true">1.4.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="rustc/hir-lowering/lint/combinedlintpass.html"><strong aria-hidden="true">1.4.1.2.</strong> CombinedLintPass</a></li><li class="chapter-item expanded "><a href="rustc/hir-lowering/lint/lint.html"><strong aria-hidden="true">1.4.1.3.</strong> Lint 执行流程</a></li></ol></li><li class="chapter-item expanded "><a href="rustc/sema/resovler/index.html"><strong aria-hidden="true">1.4.2.</strong> Resolver</a></li><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/index.html"><strong aria-hidden="true">1.4.3.</strong> HIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/type-inference/index.html"><strong aria-hidden="true">1.4.3.1.</strong> 类型推导</a></li><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/trait-solving/index.html"><strong aria-hidden="true">1.4.3.2.</strong> Trait solving</a></li><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/type-checking/index.html"><strong aria-hidden="true">1.4.3.3.</strong> 类型检查</a></li></ol></li><li class="chapter-item expanded "><a href="rustc/sema/mir-lowering/index.html"><strong aria-hidden="true">1.4.4.</strong> MIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/mir-lowering/borrow-check/index.html"><strong aria-hidden="true">1.4.4.1.</strong> Borrow checking</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rustc/codegen/index.html"><strong aria-hidden="true">1.5.</strong> 代码生成</a></li><li class="chapter-item expanded "><a href="rustc/general/index.html"><strong aria-hidden="true">1.6.</strong> 通用结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/general/errors/index.html"><strong aria-hidden="true">1.6.1.</strong> 错误系统</a></li><li class="chapter-item expanded "><a href="rustc/general/sourcemap-span/index.html"><strong aria-hidden="true">1.6.2.</strong> SourceMap & Span</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rust-tools/index.html"><strong aria-hidden="true">2.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rust-tools/cargo/index.html"><strong aria-hidden="true">2.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/wasm/index.html"><strong aria-hidden="true">2.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/clippy/index.html"><strong aria-hidden="true">2.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="open-source/index.html"><strong aria-hidden="true">3.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="open-source/KCLVM/index.html"><strong aria-hidden="true">3.1.</strong> KCLVM</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../../../index.html">Rust源码剖析</a></li><li class="chapter-item expanded affix "><a href="../../../../preface.html">前言</a></li><li class="chapter-item expanded "><a href="../../../../rustc/index.html"><strong aria-hidden="true">1.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/overview/index.html"><strong aria-hidden="true">1.1.</strong> 概述</a></li><li class="chapter-item expanded "><a href="../../../../rustc/lexer/index.html"><strong aria-hidden="true">1.2.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="../../../../rustc/parser/index.html"><strong aria-hidden="true">1.3.</strong> 语法分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/parser/ast/index.html"><strong aria-hidden="true">1.3.1.</strong> 抽象语法树</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/parser/ast/ast.html"><strong aria-hidden="true">1.3.1.1.</strong> 抽象语法书结构</a></li><li class="chapter-item expanded "><a href="../../../../rustc/parser/ast/visitor.html"><strong aria-hidden="true">1.3.1.2.</strong> 访问者模式</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../../rustc/sema/index.html"><strong aria-hidden="true">1.4.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/sema/lint/index.html"><strong aria-hidden="true">1.4.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/hir-lowering/lint/lint-pass.html"><strong aria-hidden="true">1.4.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="../../../../rustc/hir-lowering/lint/combinedlintpass.html"><strong aria-hidden="true">1.4.1.2.</strong> CombinedLintPass</a></li><li class="chapter-item expanded "><a href="../../../../rustc/hir-lowering/lint/lint.html"><strong aria-hidden="true">1.4.1.3.</strong> Lint 执行流程</a></li></ol></li><li class="chapter-item expanded "><a href="../../../../rustc/sema/resovler/index.html"><strong aria-hidden="true">1.4.2.</strong> Resolver</a></li><li class="chapter-item expanded "><a href="../../../../rustc/sema/hir-lowering/index.html"><strong aria-hidden="true">1.4.3.</strong> HIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/sema/hir-lowering/type-inference/index.html"><strong aria-hidden="true">1.4.3.1.</strong> 类型推导</a></li><li class="chapter-item expanded "><a href="../../../../rustc/sema/hir-lowering/trait-solving/index.html"><strong aria-hidden="true">1.4.3.2.</strong> Trait solving</a></li><li class="chapter-item expanded "><a href="../../../../rustc/sema/hir-lowering/type-checking/index.html"><strong aria-hidden="true">1.4.3.3.</strong> 类型检查</a></li></ol></li><li class="chapter-item expanded "><a href="../../../../rustc/sema/mir-lowering/index.html"><strong aria-hidden="true">1.4.4.</strong> MIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/sema/mir-lowering/borrow-check/index.html" class="active"><strong aria-hidden="true">1.4.4.1.</strong> Borrow checking</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../../rustc/codegen/index.html"><strong aria-hidden="true">1.5.</strong> 代码生成</a></li><li class="chapter-item expanded "><a href="../../../../rustc/general/index.html"><strong aria-hidden="true">1.6.</strong> 通用结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rustc/general/errors/index.html"><strong aria-hidden="true">1.6.1.</strong> 错误系统</a></li><li class="chapter-item expanded "><a href="../../../../rustc/general/sourcemap-span/index.html"><strong aria-hidden="true">1.6.2.</strong> SourceMap & Span</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../../rust-tools/index.html"><strong aria-hidden="true">2.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../rust-tools/cargo/index.html"><strong aria-hidden="true">2.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="../../../../rust-tools/wasm/index.html"><strong aria-hidden="true">2.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="../../../../rust-tools/clippy/index.html"><strong aria-hidden="true">2.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="../../../../open-source/index.html"><strong aria-hidden="true">3.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../../open-source/KCLVM/index.html"><strong aria-hidden="true">3.1.</strong> KCLVM</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -115,13 +115,13 @@
                     <h1 class="menu-title">Rust源码剖析</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/awesome-kusion/rust-code-book" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./preface.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./rustc/sema/mir-lowering/borrow-check/readme.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -159,9 +159,7 @@
                         </ul>
                         <hr>
 
-                        <h1 id="序言"><a class="header" href="#序言">序言</a></h1>
-<p>写这个电子书是因为一开始在做 KusionStack、KCLVM 项目中编译器研发的相关工作，本着学习优秀编译器的设计想法，开始学习 Rustc 的源码。这个过程中记录了一些笔记和文档，在<a href="https://github.com/chai2010">柴大</a>鼓励下整理成文章正式发在了公众号上。没想到很受欢迎，于是决定坚持写下去。书中会写一些 Rustc 中的源码实现、标准库、工具，以及一些 Rust 的开源项目（比如 👉 <a href="https://github.com/KusionStack/kusio">KusionStack</a> 👉 <a href="https://github.com/KusionStack/KCLVM">KCLVM</a>）。</p>
-<p>这些文章中的内容大部分是我阅读源码时的一些记录和个人理解，以及 rust-dev-guide 中对应的一些描述。本人水平有限，所以可能会有一些不准确甚至错误的地方，也欢迎大家提 PR/Issue/Discussion，或者加群讨论。如果对 Rust 源码有自己分析和见解，同样欢迎提 PR 投稿。</p>
+                        <h1 id="借用检查"><a class="header" href="#借用检查">借用检查</a></h1>
 
 
                         <!-- 公众号 -->
@@ -178,11 +176,11 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../../rustc/sema/mir-lowering/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="rustc/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../../../rustc/codegen/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -192,11 +190,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../../rustc/sema/mir-lowering/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="rustc/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../../../rustc/codegen/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -211,21 +209,21 @@
         </script>
 
 
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../../searcher.js" type="text/javascript" charset="utf-8"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../../book.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
-        var pagePath = "preface.md"
+        var pagePath = "rustc/sema/mir-lowering/borrow-check/index.md"
         </script>
 
 
         <!-- Custom JS scripts -->
-        <script type="text/javascript" src="js/custom.js"></script>
-        <script type="text/javascript" src="js/bigPicture.js"></script>
+        <script type="text/javascript" src="../../../../js/custom.js"></script>
+        <script type="text/javascript" src="../../../../js/bigPicture.js"></script>
 
 
     </body>

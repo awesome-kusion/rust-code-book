@@ -158,7 +158,6 @@
                         <h1 id="lint"><a class="header" href="#lint">Lint</a></h1>
 <h1 id="lint-与-lintpass"><a class="header" href="#lint-与-lintpass">Lint 与 LintPass</a></h1>
 <h2 id="背景"><a class="header" href="#背景">背景</a></h2>
-<h3 id="lint-工具"><a class="header" href="#lint-工具">Lint 工具</a></h3>
 <p>Lint 是代码静态分析工具的一种，最早是来源于 C 语言。Lint 工具通常会检查代码中潜在的问题和错误，包括（但不限于）编程风格（缩进、空行、空格）、代码质量（定义未使用的变量、文档缺失）以及错误代码（除0错误、重复定义、循环引用）等问题。通常来说，Lint 工具除了标识错误外，还会带有一定的 fix/refactor suggest 和 auto-fix 的能力。在工程中引入 Lint 工具可以有效的减少错误，提高整体的工程质量。此外，对一种编程语言来说，Lint 工具通常也是其他工具研发的前置条件，例如 IDE 插件的错误提示，CI 的 Pipeline 检测等。</p>
 <h2 id="lint-vs-lintpass"><a class="header" href="#lint-vs-lintpass">Lint vs. LintPass</a></h2>
 <h3 id="概念与关系"><a class="header" href="#概念与关系">概念与关系</a></h3>
@@ -777,7 +776,7 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 <img src="./images/combinedlintpass-01.jpg" alt="Linter" /></p>
 <p>这里，可以用 CombinedLintPass 的<code>check_*</code> 方法，在 Visitor 遍历 AST 时执行对应的检查。虽然效果与之前一致，但因为宏的关系，所有的 <code>check_*</code> 方法和需要执行的 lintpass 都被收集到了一个结构中，也更容易管理。同样的，因为 CombinedLintPass 实际上调用的是每个 lintpass 各自的 check 方法，虽然调用起来可能下图一样很复杂，但因为 lintpass 中定义的 check 方法大部分是由宏生成的空检查，所以也不会造成性能上的损失。
 <img src="./images/combinedlintpass-02.jpg" alt="调用关系" /></p>
-<h1 id="lint-的执行流程wip"><a class="header" href="#lint-的执行流程wip">Lint 的执行流程[WIP]</a></h1>
+<h2 id="lint-的执行流程wip"><a class="header" href="#lint-的执行流程wip">Lint 的执行流程[WIP]</a></h2>
 
 
                         <!-- 公众号 -->

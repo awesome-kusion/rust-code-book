@@ -1,0 +1,345 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>quick start - Rust源码剖析</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="通过分析代码学习Rust">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../../favicon.svg">
+                        <link rel="shortcut icon" href="../../../favicon.png">
+                <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+                <link rel="stylesheet" href="../../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../highlight.css">
+        <link rel="stylesheet" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+                <link rel="stylesheet" href="../../../style.css">
+        
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../../index.html">Rust 源码剖析</a></li><li class="chapter-item expanded affix "><a href="../../../preface.html">序言</a></li><li class="chapter-item expanded "><a href="../../../intro/index.html"><strong aria-hidden="true">1.</strong> 简介</a></li><li class="chapter-item expanded "><a href="../../../stdlib/index.html"><strong aria-hidden="true">2.</strong> 标准库</a></li><li class="chapter-item expanded "><a href="../../../rustc/index.html"><strong aria-hidden="true">3.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/overview/index.html"><strong aria-hidden="true">3.1.</strong> 概述</a></li><li class="chapter-item expanded "><a href="../../../rustc/invocation/index.html"><strong aria-hidden="true">3.2.</strong> 命令行解析</a></li><li class="chapter-item expanded "><a href="../../../rustc/lexer/index.html"><strong aria-hidden="true">3.3.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="../../../rustc/parser/index.html"><strong aria-hidden="true">3.4.</strong> 语法分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/parser/ast/index.html"><strong aria-hidden="true">3.4.1.</strong> 抽象语法树</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/parser/ast/ast.html"><strong aria-hidden="true">3.4.1.1.</strong> 抽象语法树定义</a></li><li class="chapter-item expanded "><a href="../../../rustc/parser/ast/visitor.html"><strong aria-hidden="true">3.4.1.2.</strong> 访问者模式</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/parser/early-lint/index.html"><strong aria-hidden="true">3.4.2.</strong> EarlyLint</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/sema/index.html"><strong aria-hidden="true">3.5.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/index.html"><strong aria-hidden="true">3.5.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/lint-pass.html"><strong aria-hidden="true">3.5.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/combinedlintpass.html"><strong aria-hidden="true">3.5.1.2.</strong> CombinedLintPass</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/lint.html"><strong aria-hidden="true">3.5.1.3.</strong> Lint 执行流程[WIP]</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/sema/resovler/index.html"><strong aria-hidden="true">3.5.2.</strong> Resolver</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/index.html"><strong aria-hidden="true">3.5.3.</strong> HIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/type-inference/index.html"><strong aria-hidden="true">3.5.3.1.</strong> 类型推导</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/trait-solving/index.html"><strong aria-hidden="true">3.5.3.2.</strong> Trait solving</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/type-checking/index.html"><strong aria-hidden="true">3.5.3.3.</strong> 类型检查</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/late-lint/index.html"><strong aria-hidden="true">3.5.3.4.</strong> LateLint</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/sema/mir-lowering/index.html"><strong aria-hidden="true">3.5.4.</strong> MIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/mir-lowering/borrow-check/index.html"><strong aria-hidden="true">3.5.4.1.</strong> Borrow checking</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/mir-lowering/mir-optimized/index.html"><strong aria-hidden="true">3.5.4.2.</strong> MIR 优化</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/codegen/index.html"><strong aria-hidden="true">3.6.</strong> 代码生成</a></li><li class="chapter-item expanded "><a href="../../../rustc/general/index.html"><strong aria-hidden="true">3.7.</strong> 通用结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/general/errors/index.html"><strong aria-hidden="true">3.7.1.</strong> 错误系统[WIP]</a></li><li class="chapter-item expanded "><a href="../../../rustc/general/sourcemap-span/index.html"><strong aria-hidden="true">3.7.2.</strong> SourceMap &amp; Span[WIP]</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../rust-tools/index.html"><strong aria-hidden="true">4.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rust-tools/cargo/index.html"><strong aria-hidden="true">4.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="../../../rust-tools/wasm/index.html"><strong aria-hidden="true">4.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="../../../rust-tools/clippy/index.html"><strong aria-hidden="true">4.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="../../../open-source/index.html"><strong aria-hidden="true">5.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/index.html"><strong aria-hidden="true">5.1.</strong> KCLVM</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/KCL.html"><strong aria-hidden="true">5.1.1.</strong> KCL</a></li><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/dev-guide/index.html"><strong aria-hidden="true">5.1.2.</strong> KCLVM dev guide</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/dev-guide/quick_start.html" class="active"><strong aria-hidden="true">5.1.2.1.</strong> quick start</a></li></ol></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../appendix/index.html"><strong aria-hidden="true">6.</strong> 附录</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">Rust源码剖析</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./open-source/KCLVM/dev-guide/quick_start.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+                    <main>
+                        <!-- 头部 -->
+                                                
+                        <h1 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h1>
+<p>This documentation is <em>NOT</em> intended to be comprehensive; it is meant to be a quick guide for the most useful things. For more information, see the develop guide in its entirety.</p>
+<h2 id="asking-questions"><a class="header" href="#asking-questions">Asking Questions</a></h2>
+<p>Before asking a question, make sure you have:</p>
+<ul>
+<li>
+<p>Searched open and closed:</p>
+<ul>
+<li><a href="https://github.com/KusionStack/KCLVM/issues?utf8=%E2%9C%93&amp;q=is%3Aissue">KCLVM GitHub Issues</a></li>
+</ul>
+</li>
+<li>
+<p>Read the documentations:</p>
+<ul>
+<li><a href="https://kusionstack.io/docs/reference/lang/lang/tour">KCLVM Documents</a></li>
+<li><a href="https://github.com/KusionStack/KCLVM">KCLVM Readme</a></li>
+</ul>
+</li>
+</ul>
+<p>If you have any questions about <code>KCLVM</code>, you are welcome to ask your questions in <a href="https://github.com/KusionStack/KCLVM/issues">KCLVM Github Issues</a>. When you ask a question, please describe the details as clearly as possible so that others in the KCLVM community can understand, and you <em>MUST</em> be polite and avoid personal attack and avoid not objective comparison with other projects.</p>
+<h2 id="cloning-and-building-kclvm"><a class="header" href="#cloning-and-building-kclvm">Cloning and Building <code>KCLVM</code></a></h2>
+<h3 id="system-requirements"><a class="header" href="#system-requirements">System Requirements</a></h3>
+<p>The following hardware is recommended.</p>
+<ul>
+<li>10GB+ of free disk space.</li>
+<li>4GB+ RAM</li>
+<li>2+ cores</li>
+</ul>
+<h3 id="dependencies"><a class="header" href="#dependencies">Dependencies</a></h3>
+<h4 id="docker"><a class="header" href="#docker">Docker</a></h4>
+<ul>
+<li><code>docker</code></li>
+</ul>
+<p>In the top level of the <code>KusionStack/KCLVM</code> repo and run:</p>
+<pre><code class="language-sh">make sh-in-docker
+</code></pre>
+<p>Using a docker image is our recommended way, of course, you can also configure your local development environment according to the following content.</p>
+<h4 id="macos-and-os-x"><a class="header" href="#macos-and-os-x">macOS and OS X</a></h4>
+<ul>
+<li><code>git</code></li>
+<li><code>Python 3.7+</code></li>
+<li><code>Rust 1.60+</code></li>
+<li><code>LLVM 12</code></li>
+</ul>
+<p>You'll need LLVM installed and <code>llvm-config</code> in your <code>PATH</code>. Just download from <a href="https://releases.llvm.org/download.html">LLVM 12</a> or install <code>llvm@12</code> using <code>brew</code>.</p>
+<pre><code class="language-sh">brew install llvm@12
+</code></pre>
+<p>Add the LLVM installation location to <code>LLVM_SYS_120_PREFIX</code> and the <code>$PATH</code>.</p>
+<pre><code>export LLVM_SYS_120_PREFIX=&lt;your LLVM 12 install location&gt;
+export PATH=&lt;your LLVM 12 install location&gt;/bin:$PATH
+</code></pre>
+<h4 id="linux"><a class="header" href="#linux">Linux</a></h4>
+<ul>
+<li><code>git</code></li>
+<li><code>Rust 1.60+</code></li>
+<li><code>Python3 Building Dependencies</code></li>
+<li><code>LLVM 12</code></li>
+</ul>
+<p>For UNIX based systems, you can run:</p>
+<pre><code>yum groupinstall -y &quot;Development Tools&quot;
+yum install -y gcc patch libffi-devel python-devel zlib-devel bzip2-devel ncurses-devel sqlite-devel 
+yum install -y libpcap-devel xz-devel readline-devel tk-devel gdbm-devel db4-deve
+yum -y install yum-utils
+yum-builddep -y python3
+yum install -y zlib* 
+yum install -y openssl-devel
+yum install -y glibc-static
+
+# clang-12 &amp; llvm-12
+RUN yum -y install clang
+RUN clang --version
+RUN yum -y install llvm-devel
+RUN yum -y install libffi-devel
+RUN ln -s /usr/lib64/libtinfo.so.6 /usr/lib64/libtinfo.so
+</code></pre>
+<p>On Debian, Ubuntu, and other apt based systems, you can run:</p>
+<pre><code>apt-get update
+
+apt-get install -y git wget curl
+apt-get install -y make gcc patch 
+apt-get install -y python-dev libffi-dev
+apt-get install -y zlib1g-dev ncurses-dev build-essential libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
+
+# clang-12 &amp; llvm-12
+RUN apt-get install -y clang-12 lld-12
+RUN ln -sf /usr/bin/clang-12   /usr/bin/clang
+RUN ln -sf /usr/bin/wasm-ld-12 /usr/bin/wasm-ld
+</code></pre>
+<h4 id="windows"><a class="header" href="#windows">Windows</a></h4>
+<ul>
+<li><code>git</code></li>
+<li><code>Rust 1.60+</code></li>
+<li><code>Python 3.7+</code></li>
+<li><code>LLVM 12</code></li>
+</ul>
+<p>Please add the LLVM installation location to <code>LLVM_SYS_120_PREFIX</code> and the <code>$PATH</code>.</p>
+<h3 id="cloning"><a class="header" href="#cloning">Cloning</a></h3>
+<p>You can just do a normal git clone:</p>
+<pre><code class="language-sh">git clone https://github.com/KusionStack/KCLVM.git
+cd KCLVM
+</code></pre>
+<h3 id="building"><a class="header" href="#building">Building</a></h3>
+<p>In the top level of the <code>KusionStack/KCLVM</code> repo and run:</p>
+<pre><code class="language-sh">./run.sh -a build
+</code></pre>
+<h3 id="testing"><a class="header" href="#testing">Testing</a></h3>
+<p>In the top level of the <code>KusionStack/KCLVM</code> repo and run:</p>
+<pre><code>./run.sh -a test
+</code></pre>
+<p>See the chapters on building and testing for more details.</p>
+<h2 id="contributor-procedures"><a class="header" href="#contributor-procedures">Contributor Procedures</a></h2>
+<h3 id="create-an-issue"><a class="header" href="#create-an-issue">Create an Issue</a></h3>
+<p>Every change should be accompanied by a dedicated tracking issue for that change. The main text of this issue should describe the change being made, with a focus on what users must do to fix their code. The issue should be approachable and practical; it may make sense to direct users to some other issue for the full details. The issue also serves as a place where users can comment with questions or other concerns.</p>
+<p>When you open an issue on the <code>KusionStack/KCLVM</code> repo, you need to to choose an issue template on this <a href="https://github.com/KusionStack/KCLVM/issues/new/choose">page</a>, you can choose a template according to different situations and fill in the corresponding content, and you also need to select appropriate labels for your issue to help classify and identify.</p>
+<h3 id="create-a-pr"><a class="header" href="#create-a-pr">Create a PR</a></h3>
+<p>When you open a PR on the <code>KusionStack/KCLVM</code> repo, you need to assign reviewers in the <a href="https://github.com/orgs/KusionStack/teams/kcl-dev">KCL Dev Team</a> list, and reviewers are the persons that will approve the PR to be tested and merged.</p>
+<p>Please note that all code changes in the KCLVM project require corresponding comments and tests. For more code and test writing details, please see the chapters on code of conduct and testing.</p>
+<p>Besides, all PRs need to have corresponding issues tracking, and need to add appropriate labels and milestone information.</p>
+<h4 id="bug-fixes-or-normal-code-changes"><a class="header" href="#bug-fixes-or-normal-code-changes">Bug Fixes or &quot;Normal&quot; Code Changes</a></h4>
+<p>For most PRs, no special procedures are needed. You can just open an issue and a PR, and it will be reviewed, approved, and merged. This includes most bug fixes, refactorings, and other user-invisible changes.</p>
+<p>Also, note that it is perfectly acceptable to open WIP PRs or GitHub Draft PRs. Some people prefer to do this so they can get feedback along the way or share their code with a collaborator. Others do this so they can utilize the CI to build and test their PR (e.g. if you are developing on a laptop).</p>
+<h4 id="new-features"><a class="header" href="#new-features">New Features</a></h4>
+<p>In order to implement a new feature, usually you will need to go through <a href="https://github.com/KusionStack/KEP">the KEP process</a> to propose a design, have discussions, etc.</p>
+<p>After a feature is approved to be added, a tracking issue is created on the <code>KusionStack/KCLVM</code> repo, which tracks the progress towards the implementation of the feature, any bugs reported, and eventually stabilization. The feature then can be implemented.</p>
+
+
+                        <!-- 公众号 -->
+                        <hr>
+                                                <div id="giscus-container"></div>
+                        <footer class="page-footer">
+                            <span>© 2022 | <a href="https://github.com/awesome-kusion/rust-code-book"> Rust源码剖析中文版</a>, 仅学习交流使用</span>
+                        </footer>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../../open-source/KCLVM/dev-guide/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../../appendix/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../../open-source/KCLVM/dev-guide/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../../appendix/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "open-source/KCLVM/dev-guide/quick_start.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+                <script type="text/javascript" src="../../../js/custom.js"></script>
+                <script type="text/javascript" src="../../../js/bigPicture.js"></script>
+        
+        
+    </body>
+</html>

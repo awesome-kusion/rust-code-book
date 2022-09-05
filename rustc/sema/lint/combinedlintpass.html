@@ -1,0 +1,642 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CombinedLintPass - Rust源码剖析</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="通过分析代码学习Rust">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../../favicon.svg">
+                        <link rel="shortcut icon" href="../../../favicon.png">
+                <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+                <link rel="stylesheet" href="../../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../highlight.css">
+        <link rel="stylesheet" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+                <link rel="stylesheet" href="../../../style.css">
+        
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../../index.html">Rust 源码剖析</a></li><li class="chapter-item expanded affix "><a href="../../../preface.html">序言</a></li><li class="chapter-item expanded "><a href="../../../intro/index.html"><strong aria-hidden="true">1.</strong> 简介</a></li><li class="chapter-item expanded "><a href="../../../stdlib/index.html"><strong aria-hidden="true">2.</strong> 标准库</a></li><li class="chapter-item expanded "><a href="../../../rustc/index.html"><strong aria-hidden="true">3.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/overview/index.html"><strong aria-hidden="true">3.1.</strong> 概述</a></li><li class="chapter-item expanded "><a href="../../../rustc/invocation/index.html"><strong aria-hidden="true">3.2.</strong> 命令行解析</a></li><li class="chapter-item expanded "><a href="../../../rustc/lexer/index.html"><strong aria-hidden="true">3.3.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="../../../rustc/parser/index.html"><strong aria-hidden="true">3.4.</strong> 语法分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/parser/ast/index.html"><strong aria-hidden="true">3.4.1.</strong> 抽象语法树</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/parser/ast/ast.html"><strong aria-hidden="true">3.4.1.1.</strong> 抽象语法树定义</a></li><li class="chapter-item expanded "><a href="../../../rustc/parser/ast/visitor.html"><strong aria-hidden="true">3.4.1.2.</strong> 访问者模式</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/parser/early-lint/index.html"><strong aria-hidden="true">3.4.2.</strong> EarlyLint</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/sema/index.html"><strong aria-hidden="true">3.5.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/index.html"><strong aria-hidden="true">3.5.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/lint-pass.html"><strong aria-hidden="true">3.5.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/combinedlintpass.html" class="active"><strong aria-hidden="true">3.5.1.2.</strong> CombinedLintPass</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/lint/lint.html"><strong aria-hidden="true">3.5.1.3.</strong> Lint 执行流程[WIP]</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/sema/resovler/index.html"><strong aria-hidden="true">3.5.2.</strong> Resolver</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/index.html"><strong aria-hidden="true">3.5.3.</strong> HIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/type-inference/index.html"><strong aria-hidden="true">3.5.3.1.</strong> 类型推导</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/trait-solving/index.html"><strong aria-hidden="true">3.5.3.2.</strong> Trait solving</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/hir-lowering/type-checking/index.html"><strong aria-hidden="true">3.5.3.3.</strong> 类型检查</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/late-lint/index.html"><strong aria-hidden="true">3.5.3.4.</strong> LateLint</a></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/sema/mir-lowering/index.html"><strong aria-hidden="true">3.5.4.</strong> MIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/sema/mir-lowering/borrow-check/index.html"><strong aria-hidden="true">3.5.4.1.</strong> Borrow checking</a></li><li class="chapter-item expanded "><a href="../../../rustc/sema/mir-lowering/mir-optimized/index.html"><strong aria-hidden="true">3.5.4.2.</strong> MIR 优化</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../rustc/codegen/index.html"><strong aria-hidden="true">3.6.</strong> 代码生成</a></li><li class="chapter-item expanded "><a href="../../../rustc/general/index.html"><strong aria-hidden="true">3.7.</strong> 通用结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rustc/general/errors/index.html"><strong aria-hidden="true">3.7.1.</strong> 错误系统[WIP]</a></li><li class="chapter-item expanded "><a href="../../../rustc/general/sourcemap-span/index.html"><strong aria-hidden="true">3.7.2.</strong> SourceMap &amp; Span[WIP]</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../rust-tools/index.html"><strong aria-hidden="true">4.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../rust-tools/cargo/index.html"><strong aria-hidden="true">4.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="../../../rust-tools/wasm/index.html"><strong aria-hidden="true">4.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="../../../rust-tools/clippy/index.html"><strong aria-hidden="true">4.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="../../../open-source/index.html"><strong aria-hidden="true">5.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/index.html"><strong aria-hidden="true">5.1.</strong> KCLVM</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/KCL.html"><strong aria-hidden="true">5.1.1.</strong> KCL</a></li><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/dev-guide/index.html"><strong aria-hidden="true">5.1.2.</strong> KCLVM dev guide</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../open-source/KCLVM/dev-guide/quick_start.html"><strong aria-hidden="true">5.1.2.1.</strong> quick start</a></li></ol></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../../appendix/index.html"><strong aria-hidden="true">6.</strong> 附录</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">Rust源码剖析</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./rustc/sema/lint/combinedlintpass.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+                    <main>
+                        <!-- 头部 -->
+                                                
+                        <h1 id="combinedlintpass"><a class="header" href="#combinedlintpass">CombinedLintPass</a></h1>
+<h2 id="combinedlintpass-1"><a class="header" href="#combinedlintpass-1">CombinedLintpass</a></h2>
+<p>Rustc 在 <code>LintPass</code> 的中实现了 <code>Lint</code> 工具检查的具体逻辑。并且使用 Visitor 模式遍历 AST 的同时调用 lintpass 中的 <code>check_*</code>方法。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl ast_visit::Visitor for Linter {
+    fn visit_crate(a: ast:crate){
+        for lintpass in lintpasses{
+            lintpass.check_crate(a)
+        }
+        walk_crate();
+    }
+    fn visit_stmt(a: ast:stmt){
+        for lintpass in lintpasses{
+            lintpass.check_stmt(a)
+        }
+        walk_stmt();
+    }
+    ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>但是，Rustc 自身和 clippy 提供的 Lint 定义多达550+多个。考虑到性能因素，定义大量的 LintPass，分别注册和调用显然是不合适的。Rustc 提供了一种更优的解决方法：既然可以将多个 Lint 组织为一个 LintPass，同样也可以将多个 LintPass 组合成一个 CombinedLintPass。</p>
+<blockquote>
+<p><a href="https://rustc-dev-guide.rust-lang.org/diagnostics/lintstore.html#compiler-lint-passes-are-combined-into-one-pass">Compiler lint passes are combined into one pass</a>
+Within the compiler, for performance reasons, we usually do not register dozens of lint passes. Instead, we have a single lint pass of each variety (e.g., BuiltinCombinedModuleLateLintPass) which will internally call all of the individual lint passes; this is because then we get the benefits of static over dynamic dispatch for each of the (often empty) trait methods.
+Ideally, we'd not have to do this, since it adds to the complexity of understanding the code. However, with the current type-erased lint store approach, it is beneficial to do so for performance reasons.</p>
+</blockquote>
+<h3 id="builtincombinedearlylintpass"><a class="header" href="#builtincombinedearlylintpass">BuiltinCombinedEarlyLintPass</a></h3>
+<p>CombinedLintPass 同样分为 early 和 late 两类。 以 builtin 的 early lint 为例，Rustc 在 <code>rustc_lint::src::lib.rs</code> 中为这些 lintpass 定义了一个 <code>BuiltinCombinedEarlyLintPass</code> 结构。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>early_lint_passes!(declare_combined_early_pass, [BuiltinCombinedEarlyLintPass]);
+<span class="boring">}
+</span></code></pre></pre>
+<p>虽然这个定义看起来只有一行，但其中通过若干个宏的展开，汇总了14个 <code>LintPass</code>，并且每个 <code>LintPass</code> 提供了50多个 <code>check_*</code> 方法。接下来一一说明这些宏。</p>
+<h4 id="builtincombinedearlylintpass-的宏定义"><a class="header" href="#builtincombinedearlylintpass-的宏定义">BuiltinCombinedEarlyLintPass 的宏定义</a></h4>
+<h5 id="early_lint_passes"><a class="header" href="#early_lint_passes">early_lint_passes</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! early_lint_passes {
+    ($macro:path, $args:tt) =&gt; {
+        $macro!(
+            $args,
+            [
+                UnusedParens: UnusedParens,
+                UnusedBraces: UnusedBraces,
+                UnusedImportBraces: UnusedImportBraces,
+                UnsafeCode: UnsafeCode,
+                AnonymousParameters: AnonymousParameters,
+                EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+                NonCamelCaseTypes: NonCamelCaseTypes,
+                DeprecatedAttr: DeprecatedAttr::new(),
+                WhileTrue: WhileTrue,
+                NonAsciiIdents: NonAsciiIdents,
+                HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+                IncompleteFeatures: IncompleteFeatures,
+                RedundantSemicolons: RedundantSemicolons,
+                UnusedDocComment: UnusedDocComment,
+            ]
+        );
+    };
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>首先是 early_lint_passes 宏，这个宏的主要作用是定义了所有的 early lintpass。这里的 lintpass 是成对出现的，<code>:</code>左边为 lintpass 的 Identifier，<code>:</code>右边为 lintpass 的constructor。所以会出现 <code>EllipsisInclusiveRangePatterns::default()</code> 和 <code>DeprecatedAttr::new()</code>这种形式。early_lint_passes 会将定义的 early lintpass 和 第二个参数一起传递给下一个宏。
+通过这个宏，之前的<code>BuiltinCombinedEarlyLintPass</code>的定义被展开为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>declare_combined_early_pass!([BuiltinCombinedEarlyLintPass], [
+                UnusedParens: UnusedParens,
+                UnusedBraces: UnusedBraces,
+                UnusedImportBraces: UnusedImportBraces,
+                UnsafeCode: UnsafeCode,
+                AnonymousParameters: AnonymousParameters,
+                EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+                NonCamelCaseTypes: NonCamelCaseTypes,
+                DeprecatedAttr: DeprecatedAttr::new(),
+                WhileTrue: WhileTrue,
+                NonAsciiIdents: NonAsciiIdents,
+                HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+                IncompleteFeatures: IncompleteFeatures,
+                RedundantSemicolons: RedundantSemicolons,
+                UnusedDocComment: UnusedDocComment,
+            ])
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="declare_combined_early_pass"><a class="header" href="#declare_combined_early_pass">declare_combined_early_pass</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! declare_combined_early_pass {
+    ([$name:ident], $passes:tt) =&gt; (
+        early_lint_methods!(declare_combined_early_lint_pass, [pub $name, $passes]);
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>declare_combined_early_pass 宏接收 early_lint_passes宏传来的 name(BuiltinCombinedEarlyLintPass) 和 passes，并继续传递给 early_lint_methods 宏。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义继续展开为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>early_lint_methods!(declare_combined_early_lint_pass, 
+                    [pub BuiltinCombinedEarlyLintPass, 
+                      [
+                            UnusedParens: UnusedParens,
+                            UnusedBraces: UnusedBraces,
+                            UnusedImportBraces: UnusedImportBraces,
+                            UnsafeCode: UnsafeCode,
+                            AnonymousParameters: AnonymousParameters,
+                            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+                            NonCamelCaseTypes: NonCamelCaseTypes,
+                            DeprecatedAttr: DeprecatedAttr::new(),
+                            WhileTrue: WhileTrue,
+                            NonAsciiIdents: NonAsciiIdents,
+                            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+                            IncompleteFeatures: IncompleteFeatures,
+                            RedundantSemicolons: RedundantSemicolons,
+                            UnusedDocComment: UnusedDocComment,
+               ]
+                    ]);
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="early_lint_methods"><a class="header" href="#early_lint_methods">early_lint_methods</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! early_lint_methods {
+    ($macro:path, $args:tt) =&gt; (
+        $macro!($args, [
+            fn check_param(a: &amp;ast::Param);
+            fn check_ident(a: &amp;ast::Ident);
+            fn check_crate(a: &amp;ast::Crate);
+            fn check_crate_post(a: &amp;ast::Crate);
+            ...
+        ]);
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>early_lint_methods 宏在前一篇文章中也介绍过，它定义了 <code>EarlyLintPass</code> 中需要实现的 <code>check_*</code>函数，并且将这些函数以及接收的参数 <code>$args</code>传递给下一个宏。因为 <code>BuiltinCombinedEarlyLintPass</code> 也是 early lint 的一种，所以同样需要实现这些函数。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义继续展开为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>declare_combined_early_lint_pass!(
+    [pub BuiltinCombinedEarlyLintPass, 
+        [
+            UnusedParens: UnusedParens,
+            UnusedBraces: UnusedBraces,
+            UnusedImportBraces: UnusedImportBraces,
+            UnsafeCode: UnsafeCode,
+            AnonymousParameters: AnonymousParameters,
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+            NonCamelCaseTypes: NonCamelCaseTypes,
+            DeprecatedAttr: DeprecatedAttr::new(),
+            WhileTrue: WhileTrue,
+            NonAsciiIdents: NonAsciiIdents,
+            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+            IncompleteFeatures: IncompleteFeatures,
+            RedundantSemicolons: RedundantSemicolons,
+            UnusedDocComment: UnusedDocComment,
+        ]
+    ],
+    [
+        fn check_param(a: &amp;ast::Param);
+        fn check_ident(a: &amp;ast::Ident);
+        fn check_crate(a: &amp;ast::Crate);
+        fn check_crate_post(a: &amp;ast::Crate);
+        ...
+    ]
+)
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="declare_combined_early_lint_pass"><a class="header" href="#declare_combined_early_lint_pass">declare_combined_early_lint_pass</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! declare_combined_early_lint_pass {
+    ([$v:vis $name:ident, [$($passes:ident: $constructor:expr,)*]], $methods:tt) =&gt; (
+        #[allow(non_snake_case)]
+        $v struct $name {
+            $($passes: $passes,)*
+        }
+        impl $name {
+            $v fn new() -&gt; Self {
+                Self {
+                    $($passes: $constructor,)*
+                }
+            }
+            $v fn get_lints() -&gt; LintArray {
+                let mut lints = Vec::new();
+                $(lints.extend_from_slice(&amp;$passes::get_lints());)*
+                lints
+            }
+        }
+        impl EarlyLintPass for $name {
+            expand_combined_early_lint_pass_methods!([$($passes),*], $methods);
+        }
+        #[allow(rustc::lint_pass_impl_without_macro)]
+        impl LintPass for $name {
+            fn name(&amp;self) -&gt; &amp;'static str {
+                panic!()
+            }
+        }
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>declare_combined_early_lint_pass宏是生成 <code>BuiltinCombinedEarlyLintPass</code> 的主体。这个宏中做了以下工作：</p>
+<ul>
+<li>生成一个名为 <code>BuiltinCombinedEarlyLintPass</code> 的 struct，其中的属性为宏 <code>early_lint_passes</code> 提供的 lintpass 的 identifier。</li>
+<li>实现 <code>fn new()</code> <code>fn name()</code> 和 <code>fn get_lints()</code> 方法。其中 <code>new()</code> 调用了 <code>early_lint_passes</code> 提供的 lintpass 的 constructor。</li>
+<li>调用宏 <code>expand_combined_early_lint_pass_methods</code>，实现自身的 <code>check_*</code> 方法。</li>
+</ul>
+<p>通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义变为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct BuiltinCombinedEarlyLintPass {
+            UnusedParens: UnusedParens,
+            UnusedBraces: UnusedBraces,
+            UnusedImportBraces: UnusedImportBraces,
+            UnsafeCode: UnsafeCode,
+            AnonymousParameters: AnonymousParameters,
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns,
+            NonCamelCaseTypes: NonCamelCaseTypes,
+            DeprecatedAttr: DeprecatedAttr,
+            WhileTrue: WhileTrue,
+            NonAsciiIdents: NonAsciiIdents,
+            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+            IncompleteFeatures: IncompleteFeatures,
+            RedundantSemicolons: RedundantSemicolons,
+            UnusedDocComment: UnusedDocComment,
+}
+impl BuiltinCombinedEarlyLintPass {
+    pub fn new() -&gt; Self {
+        Self {
+            UnusedParens: UnusedParens,
+            UnusedBraces: UnusedBraces,
+            UnusedImportBraces: UnusedImportBraces,
+            UnsafeCode: UnsafeCode,
+            AnonymousParameters: AnonymousParameters,
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+            NonCamelCaseTypes: NonCamelCaseTypes,
+            DeprecatedAttr: DeprecatedAttr::new(),
+            WhileTrue: WhileTrue,
+            NonAsciiIdents: NonAsciiIdents,
+            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+            IncompleteFeatures: IncompleteFeatures,
+            RedundantSemicolons: RedundantSemicolons,
+            UnusedDocComment: UnusedDocComment,
+        }
+    }
+    pub fn get_lints() -&gt; LintArray {
+        let mut lints = Vec::new();
+        lints.extend_from_slice(&amp;UnusedParens::get_lints());
+        lints.extend_from_slice(&amp;UnusedBraces::get_lints());
+        lints.extend_from_slice(&amp;UnusedImportBraces::get_lints());
+        lints.extend_from_slice(&amp;UnsafeCode::get_lints());
+        lints.extend_from_slice(&amp;AnonymousParameters::get_lints());
+        lints.extend_from_slice(&amp;EllipsisInclusiveRangePatterns::get_lints());
+        lints.extend_from_slice(&amp;NonCamelCaseTypes::get_lints());
+        lints.extend_from_slice(&amp;DeprecatedAttr::get_lints());
+        lints.extend_from_slice(&amp;WhileTrue::get_lints());
+        lints.extend_from_slice(&amp;NonAsciiIdents::get_lints());
+        lints.extend_from_slice(&amp;HiddenUnicodeCodepoints::get_lints());
+        lints.extend_from_slice(&amp;IncompleteFeatures::get_lints());
+        lints.extend_from_slice(&amp;RedundantSemicolons::get_lints());
+        lints.extend_from_slice(&amp;UnusedDocComment::get_lints());
+        
+        lints
+    }
+}
+impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    expand_combined_early_lint_pass_methods!([$($passes),*], $methods);
+}
+#[allow(rustc::lint_pass_impl_without_macro)]
+impl LintPass for BuiltinCombinedEarlyLintPass {
+    fn name(&amp;self) -&gt; &amp;'static str {
+        panic!()
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="expand_combined_early_lint_pass_methods"><a class="header" href="#expand_combined_early_lint_pass_methods">expand_combined_early_lint_pass_methods</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! expand_combined_early_lint_pass_methods {
+    ($passes:tt, [$($(#[$attr:meta])* fn $name:ident($($param:ident: $arg:ty),*);)*]) =&gt; (
+        $(fn $name(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, $($param: $arg),*) {
+            expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+        })*
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>expand_combined_early_lint_pass_methods宏在 <code>BuiltinCombinedEarlyLintPass</code> 中展开所有 <code>early_lint_methods</code> 中定义的方法。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义变为（省略其他定义）：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    fn check_param(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Param) {
+        expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+    }
+    fn check_ident(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Ident) {
+        expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+    }
+    fn check_crate(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Crate) {
+        expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+    }
+    ...
+    
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="expand_combined_early_lint_pass_method"><a class="header" href="#expand_combined_early_lint_pass_method">expand_combined_early_lint_pass_method</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! expand_combined_early_lint_pass_method {
+    ([$($passes:ident),*], $self: ident, $name: ident, $params:tt) =&gt; ({
+        $($self.$passes.$name $params;)*
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>expand_combined_early_lint_pass_method：在展开的<code>check_*</code> 函数中调用每一个 <code>LintPass</code> 的 <code>check_*</code>。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义变为（省略其他定义）：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    fn check_param(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Param) {
+        self.UnusedParens.check_param(context, a);
+        self.UnusedBraces.check_param(context, a);
+        self.UnusedImportBraces.check_param(context, a);
+        ...
+    }
+    fn check_ident(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Ident) {
+        self.UnusedParens.check_ident(context, a);
+        self.UnusedBraces.check_ident(context, a);
+        self.UnusedImportBraces.check_ident(context, a);
+        ...
+    }
+    fn check_crate(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Crate) {
+        self.UnusedParens.check_crate(context, a);
+        self.UnusedBraces.check_crate(context, a);
+        self.UnusedImportBraces.check_crate(context, a);
+        ...
+    }
+    ...
+    
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h4 id="builtincombinedearlylintpass-的最终定义"><a class="header" href="#builtincombinedearlylintpass-的最终定义">BuiltinCombinedEarlyLintPass 的最终定义</a></h4>
+<p>通过以上宏的展开，<code>BuiltinCombinedEarlyLintPass</code>的定义实际为如下形式：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct BuiltinCombinedEarlyLintPass {
+    UnusedParens: UnusedParens,
+    UnusedBraces: UnusedBraces,
+    ...
+}
+
+impl BuiltinCombinedEarlyLintPass{
+    pub fn new() -&gt; Self {
+        UnusedParens: UnusedParens,
+        UnusedBraces: UnusedBraces,
+        ...
+    }
+    
+    pub fn get_lints() -&gt; LintArray {
+        let mut lints = Vec::new();
+        lints.extend_from_slice(&amp;UnusedParens::get_lints());
+        lints.extend_from_slice(&amp;UnusedBraces::get_lints());
+        ...
+        lints
+    }
+}
+
+impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    fn check_crates(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Crate){
+        self.UnusedParens.check_crates (context, a);
+        self.UnusedBraces.check_crates (context, a);
+        ...
+    }
+    fn check_ident(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: Ident){
+        self.UnusedParens.check_ident (context, a);
+        self.UnusedBraces.check_ident (context, a);
+        ...
+    }
+    .. 
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>通过这个定义，可以在遍历 AST 时使用 <code>BuiltinCombinedEarlyLintPass</code> 的 <code>check_*</code> 方法实现多个 lintpass 的检查。</p>
+<h2 id="lint-的进一步优化"><a class="header" href="#lint-的进一步优化">Lint 的进一步优化</a></h2>
+<p>基于 CombinedLintPass ，可以对上一篇文章中提出的 Linter 的设计做进一步优化。
+<img src="./images/combinedlintpass-01.jpg" alt="Linter" /></p>
+<p>这里，可以用 CombinedLintPass 的<code>check_*</code> 方法，在 Visitor 遍历 AST 时执行对应的检查。虽然效果与之前一致，但因为宏的关系，所有的 <code>check_*</code> 方法和需要执行的 lintpass 都被收集到了一个结构中，也更容易管理。同样的，因为 CombinedLintPass 实际上调用的是每个 lintpass 各自的 check 方法，虽然调用起来可能下图一样很复杂，但因为 lintpass 中定义的 check 方法大部分是由宏生成的空检查，所以也不会造成性能上的损失。
+<img src="./images/combinedlintpass-02.jpg" alt="调用关系" /></p>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>本文简单介绍了 Rustc 源码中关于 <code>CombinedLintPass</code> 这一结构的定义和实现 ，并以此进一步优化 Linter 的设计。希望能够对理解 Rustc 及 Lint 有所帮助，如有错误，欢迎指正。后续的文章将继续介绍 Rustc 中 Lint 在编译过程中的注册和执行过程，期待继续关注。</p>
+<h2 id="ref"><a class="header" href="#ref">Ref</a></h2>
+<ul>
+<li>KusionStack: <a href="https://github.com/KusionStack">https://github.com/KusionStack</a></li>
+<li>Rustc: <a href="https://github.com/rust-lang/rust">https://github.com/rust-lang/rust</a></li>
+<li>rustc-dev-guide: <a href="https://rustc-dev-guide.rust-lang.org/">https://rustc-dev-guide.rust-lang.org/</a></li>
+<li>Rust Visitor: <a href="https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast/visit/index.html">https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast/visit/index.html</a></li>
+<li>Rust Clippy: <a href="https://github.com/rust-lang/rust-clippy">https://github.com/rust-lang/rust-clippy</a></li>
+</ul>
+
+
+                        <!-- 公众号 -->
+                        <hr>
+                                                <div id="giscus-container"></div>
+                        <footer class="page-footer">
+                            <span>© 2022 | <a href="https://github.com/awesome-kusion/rust-code-book"> Rust源码剖析中文版</a>, 仅学习交流使用</span>
+                        </footer>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../../rustc/sema/lint/lint-pass.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../../rustc/sema/lint/lint.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../../rustc/sema/lint/lint-pass.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../../rustc/sema/lint/lint.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../../book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "rustc/sema/lint/combinedlintpass.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+                <script type="text/javascript" src="../../../js/custom.js"></script>
+                <script type="text/javascript" src="../../../js/bigPicture.js"></script>
+        
+        
+    </body>
+</html>

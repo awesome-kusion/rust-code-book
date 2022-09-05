@@ -1,0 +1,1153 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Rust源码剖析</title>
+                <meta name="robots" content="noindex" />
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="通过分析代码学习Rust">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="favicon.svg">
+                        <link rel="shortcut icon" href="favicon.png">
+                <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+                <link rel="stylesheet" href="css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+                <link rel="stylesheet" href="style.css">
+        
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Rust 源码剖析</a></li><li class="chapter-item expanded affix "><a href="preface.html">序言</a></li><li class="chapter-item expanded "><a href="intro/index.html"><strong aria-hidden="true">1.</strong> 简介</a></li><li class="chapter-item expanded "><a href="stdlib/index.html"><strong aria-hidden="true">2.</strong> 标准库</a></li><li class="chapter-item expanded "><a href="rustc/index.html"><strong aria-hidden="true">3.</strong> Rust编译器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/overview/index.html"><strong aria-hidden="true">3.1.</strong> 概述</a></li><li class="chapter-item expanded "><a href="rustc/invocation/index.html"><strong aria-hidden="true">3.2.</strong> 命令行解析</a></li><li class="chapter-item expanded "><a href="rustc/lexer/index.html"><strong aria-hidden="true">3.3.</strong> 词法分析</a></li><li class="chapter-item expanded "><a href="rustc/parser/index.html"><strong aria-hidden="true">3.4.</strong> 语法分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/parser/ast/index.html"><strong aria-hidden="true">3.4.1.</strong> 抽象语法树</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/parser/ast/ast.html"><strong aria-hidden="true">3.4.1.1.</strong> 抽象语法树定义</a></li><li class="chapter-item expanded "><a href="rustc/parser/ast/visitor.html"><strong aria-hidden="true">3.4.1.2.</strong> 访问者模式</a></li></ol></li><li class="chapter-item expanded "><a href="rustc/parser/early-lint/index.html"><strong aria-hidden="true">3.4.2.</strong> EarlyLint</a></li></ol></li><li class="chapter-item expanded "><a href="rustc/sema/index.html"><strong aria-hidden="true">3.5.</strong> 语义分析</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/lint/index.html"><strong aria-hidden="true">3.5.1.</strong> Lint</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/lint/lint-pass.html"><strong aria-hidden="true">3.5.1.1.</strong> Lint 与 LintPass</a></li><li class="chapter-item expanded "><a href="rustc/sema/lint/combinedlintpass.html"><strong aria-hidden="true">3.5.1.2.</strong> CombinedLintPass</a></li><li class="chapter-item expanded "><a href="rustc/sema/lint/lint.html"><strong aria-hidden="true">3.5.1.3.</strong> Lint 执行流程[WIP]</a></li></ol></li><li class="chapter-item expanded "><a href="rustc/sema/resovler/index.html"><strong aria-hidden="true">3.5.2.</strong> Resolver</a></li><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/index.html"><strong aria-hidden="true">3.5.3.</strong> HIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/type-inference/index.html"><strong aria-hidden="true">3.5.3.1.</strong> 类型推导</a></li><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/trait-solving/index.html"><strong aria-hidden="true">3.5.3.2.</strong> Trait solving</a></li><li class="chapter-item expanded "><a href="rustc/sema/hir-lowering/type-checking/index.html"><strong aria-hidden="true">3.5.3.3.</strong> 类型检查</a></li><li class="chapter-item expanded "><a href="rustc/sema/late-lint/index.html"><strong aria-hidden="true">3.5.3.4.</strong> LateLint</a></li></ol></li><li class="chapter-item expanded "><a href="rustc/sema/mir-lowering/index.html"><strong aria-hidden="true">3.5.4.</strong> MIR lowering</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/sema/mir-lowering/borrow-check/index.html"><strong aria-hidden="true">3.5.4.1.</strong> Borrow checking</a></li><li class="chapter-item expanded "><a href="rustc/sema/mir-lowering/mir-optimized/index.html"><strong aria-hidden="true">3.5.4.2.</strong> MIR 优化</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rustc/codegen/index.html"><strong aria-hidden="true">3.6.</strong> 代码生成</a></li><li class="chapter-item expanded "><a href="rustc/general/index.html"><strong aria-hidden="true">3.7.</strong> 通用结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rustc/general/errors/index.html"><strong aria-hidden="true">3.7.1.</strong> 错误系统[WIP]</a></li><li class="chapter-item expanded "><a href="rustc/general/sourcemap-span/index.html"><strong aria-hidden="true">3.7.2.</strong> SourceMap &amp; Span[WIP]</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="rust-tools/index.html"><strong aria-hidden="true">4.</strong> Rust外围工具</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="rust-tools/cargo/index.html"><strong aria-hidden="true">4.1.</strong> Cargo包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/wasm/index.html"><strong aria-hidden="true">4.2.</strong> WASM包管理</a></li><li class="chapter-item expanded "><a href="rust-tools/clippy/index.html"><strong aria-hidden="true">4.3.</strong> Clippy</a></li></ol></li><li class="chapter-item expanded "><a href="open-source/index.html"><strong aria-hidden="true">5.</strong> Rust开源项目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="open-source/KCLVM/index.html"><strong aria-hidden="true">5.1.</strong> KCLVM</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="open-source/KCLVM/KCL.html"><strong aria-hidden="true">5.1.1.</strong> KCL</a></li><li class="chapter-item expanded "><a href="open-source/KCLVM/dev-guide/index.html"><strong aria-hidden="true">5.1.2.</strong> KCLVM dev guide</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="open-source/KCLVM/dev-guide/quick_start.html"><strong aria-hidden="true">5.1.2.1.</strong> quick start</a></li></ol></li></ol></li></ol></li><li class="chapter-item expanded "><a href="appendix/index.html"><strong aria-hidden="true">6.</strong> 附录</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">Rust源码剖析</h1>
+
+                    <div class="right-buttons">
+                                                <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+                    <main>
+                        <!-- 头部 -->
+                                                
+                        <h1 id="rust源码剖析-中文版"><a class="header" href="#rust源码剖析-中文版">Rust源码剖析 中文版</a></h1>
+<p>目标：学习分析 Rust 编译器（Rustc）、标准库、开源项目源代码。</p>
+<p><img src="cover.jpg" alt="cover" /></p>
+<ul>
+<li>代码仓库: <a href="https://github.com/awesome-kusion/rust-code-book">https://github.com/awesome-kusion/rust-code-book</a></li>
+<li>在线阅读: <a href="https://awesome-kusion.github.io/rust-code-book">https://awesome-kusion.github.io/rust-code-book</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="序言"><a class="header" href="#序言">序言</a></h1>
+<p>写这个电子书是因为一开始在做 KusionStack、KCLVM 项目中编译器研发的相关工作，本着学习优秀编译器的设计想法，开始学习 Rustc 的源码。这个过程中记录了一些笔记和文档，在<a href="https://github.com/chai2010">柴大</a>鼓励下整理成文章正式发在了公众号上。没想到很受欢迎，于是决定坚持写下去。接下来会去写一些 Rustc 中的源码实现、标准库、工具，以及一些 Rust 的开源项目。</p>
+<p>KCLVM 是我们在 Kusion 这个项目中使用 Rust 开发的语言编译器，书中的部分内容在这个项目中也有对应的应用。对云原生生态、技术感兴趣的同学可以了解下  👉 <a href="https://github.com/KusionStack/kusion">KusionStack</a> 这个项目；对 Rust、编程语言、编译器感兴趣的同学可以看下 👉 <a href="https://github.com/KusionStack/KCLVM">KCLVM</a>。</p>
+<p>最后，这些文章中的内容大部分是我阅读源码时的一些记录和个人理解，以及 rust-dev-guide 中对应的一些描述。本人水平有限，所以可能会有一些不准确甚至错误的地方，也欢迎大家提 PR/Issue/Discussion，或者下方扫码加群讨论。如果对 Rust 源码有自己分析和见解，同样欢迎提 PR 投稿。</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="简介"><a class="header" href="#简介">简介</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="标准库"><a class="header" href="#标准库">标准库</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rust编译器"><a class="header" href="#rust编译器">Rust编译器</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="基础结构"><a class="header" href="#基础结构">基础结构</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="命令行解析"><a class="header" href="#命令行解析">命令行解析</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="词法分析"><a class="header" href="#词法分析">词法分析</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="语法分析"><a class="header" href="#语法分析">语法分析</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><h1 id="ast"><a class="header" href="#ast">AST</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="访问者模式"><a class="header" href="#访问者模式">访问者模式</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="early-lint"><a class="header" href="#early-lint">Early Lint</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="语义分析"><a class="header" href="#语义分析">语义分析</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lint"><a class="header" href="#lint">Lint</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lint-与-lintpass"><a class="header" href="#lint-与-lintpass">Lint 与 LintPass</a></h1>
+<h2 id="背景"><a class="header" href="#背景">背景</a></h2>
+<h3 id="rustc"><a class="header" href="#rustc">Rustc</a></h3>
+<p>Rustc 是 Rust Compiler 的简称，即 Rust 编程语言的编译器。Rust 的编译器是自举的，即 Rustc 由 Rust 语言编写而成，可以通过旧版本编译出新版本。因此，Rustc 可以说是用 Rust 语言编写编译器的最佳实践。</p>
+<h3 id="lint-工具"><a class="header" href="#lint-工具">Lint 工具</a></h3>
+<p>Lint 是代码静态分析工具的一种，最早是来源于 C 语言。Lint 工具通常会检查代码中潜在的问题和错误，包括（但不限于）编程风格（缩进、空行、空格）、代码质量（定义未使用的变量、文档缺失）以及错误代码（除0错误、重复定义、循环引用）等问题。通常来说，Lint 工具除了标识错误外，还会带有一定的 fix/refactor suggest 和 auto-fix 的能力。在工程中引入 Lint 工具可以有效的减少错误，提高整体的工程质量。此外，对一种编程语言来说，Lint 工具通常也是其他工具研发的前置条件，例如 IDE 插件的错误提示，CI 的 Pipeline 检测等。</p>
+<h2 id="lint-vs-lintpass"><a class="header" href="#lint-vs-lintpass">Lint vs. LintPass</a></h2>
+<h3 id="概念与关系"><a class="header" href="#概念与关系">概念与关系</a></h3>
+<p>Rustc 中关于 Lint 最主要的结构有两个， <code>Lint</code> 和 <code>LintPass</code>。首先需要区分 Lint 和 LintPass 的概念。Rustc 的很多文档中都将它们统称为 <code>Lint</code>，这很容易造成混淆。关于这两者之间的区别，rustc-dev-guide 给出的解释是：</p>
+<blockquote>
+<p>Lint declarations don't carry any &quot;state&quot; - they are merely global identifiers and descriptions of lints. We assert at runtime that they are not registered twice (by lint name).
+Lint passes are the meat of any lint.</p>
+</blockquote>
+<p>从定义方面， <code>Lint</code> 是对所定义的 lint 检查的静态描述，例如 name, level, description, code 等属性，与检查时的状态无关，Rustc 用 <code>Lint</code> 的定义做唯一性的检查。而 <code>LintPass</code> 是 <code>Lint</code> 的具体实现，是在检查时调用的 <code>check_*</code> 方法。
+在具体的代码实现方法， <code>Lint</code>定义为一个 Struct，所有 lint 的定义都是此类型的一个实例/对象。而 <code>LintPass</code> 则对应为一个 trait。trait 类似于 java/c++ 中的接口，每一个 lintpass 的定义都需要实现该接口中定义的方法。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Specification of a single lint.
+#[derive(Copy, Clone, Debug)]
+pub struct Lint {
+    pub name: &amp;'static str,
+    /// Default level for the lint.
+    pub default_level: Level,
+    /// Description of the lint or the issue it detects.
+    ///
+    /// e.g., &quot;imports that are never used&quot;
+    pub desc: &amp;'static str,
+    ...
+}
+
+pub trait LintPass {
+    fn name(&amp;self) -&gt; &amp;'static str;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>需要注意的是，尽管刚刚的描述中说到<code>trait</code> 类似于接口而 <code>Lint</code> 是一个 struct，但 <code>Lint</code> 和 <code>LintPass</code> 之间并不是 OO 中一个“类”和它的“方法”的关系。而是在声明 <code>LintPass</code> 会生成一个实现了该 trait 的同名的 struct，该 struct 中的 <code>get_lints()</code> 方法会生成对应的 <code>Lint</code> 定义。</p>
+<p><img src="rustc/sema/lint/./images/lint_lintpass.jpeg" alt="lint vs. lintpass" /></p>
+<p>这与 rustc-dev-guide 的描述也保持了一致:</p>
+<blockquote>
+<p>A lint might not have any lint pass that emits it, it could have many, or just one -- the compiler doesn't track whether a pass is in any way associated with a particular lint, and frequently lints are emitted as part of other work (e.g., type checking, etc.).</p>
+</blockquote>
+<h3 id="lint-与-lintpass-的宏定义"><a class="header" href="#lint-与-lintpass-的宏定义">Lint 与 LintPass 的宏定义</a></h3>
+<p>Rustc 为 Lint 和 LintPass 都提供了用于定义其结构的宏。
+定义 Lint 的宏<code>declare_lint</code> 比较简单，可以在<code>rustc_lint_defs::lib.rs</code>中找到。<code>declare_lint</code> 宏解析输入参数，并生成名称为 <code>$NAME</code> 的 Lint struct。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_export]
+macro_rules! declare_lint {
+    ($(#[$attr:meta])* $vis: vis $NAME: ident, $Level: ident, $desc: expr) =&gt; (
+        $crate::declare_lint!(
+            $(#[$attr])* $vis $NAME, $Level, $desc,
+        );
+    );
+    ($(#[$attr:meta])* $vis: vis $NAME: ident, $Level: ident, $desc: expr,
+     $(@feature_gate = $gate:expr;)?
+     $(@future_incompatible = FutureIncompatibleInfo { $($field:ident : $val:expr),* $(,)*  }; )?
+     $($v:ident),*) =&gt; (
+        $(#[$attr])*
+        $vis static $NAME: &amp;$crate::Lint = &amp;$crate::Lint {
+            name: stringify!($NAME),
+            default_level: $crate::$Level,
+            desc: $desc,
+            edition_lint_opts: None,
+            is_plugin: false,
+            $($v: true,)*
+            $(feature_gate: Some($gate),)*
+            $(future_incompatible: Some($crate::FutureIncompatibleInfo {
+                $($field: $val,)*
+                ..$crate::FutureIncompatibleInfo::default_fields_for_macro()
+            }),)*
+            ..$crate::Lint::default_fields_for_macro()
+        };
+    );
+    ($(#[$attr:meta])* $vis: vis $NAME: ident, $Level: ident, $desc: expr,
+     $lint_edition: expr =&gt; $edition_level: ident
+    ) =&gt; (
+        $(#[$attr])*
+        $vis static $NAME: &amp;$crate::Lint = &amp;$crate::Lint {
+            name: stringify!($NAME),
+            default_level: $crate::$Level,
+            desc: $desc,
+            edition_lint_opts: Some(($lint_edition, $crate::Level::$edition_level)),
+            report_in_external_macro: false,
+            is_plugin: false,
+        };
+    );
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>LintPass 的定义涉及到两个宏：</p>
+<ul>
+<li>declare_lint_pass：生成一个名为<code>$name</code> 的 struct，并且调用 <code>impl_lint_pass</code> 宏。</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! declare_lint_pass {
+    ($(#[$m:meta])* $name:ident =&gt; [$($lint:expr),* $(,)?]) =&gt; {
+        $(#[$m])* #[derive(Copy, Clone)] pub struct $name;
+        $crate::impl_lint_pass!($name =&gt; [$($lint),*]);
+    };
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li>impl_lint_pass：为生成的 <code>LintPass</code> 结构实现<code>fn name()</code>和 <code>fn get_lints()</code> 方法。</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! impl_lint_pass {
+    ($ty:ty =&gt; [$($lint:expr),* $(,)?]) =&gt; {
+        impl $crate::LintPass for $ty {
+            fn name(&amp;self) -&gt; &amp;'static str { stringify!($ty) }
+        }
+        impl $ty {
+            pub fn get_lints() -&gt; $crate::LintArray { $crate::lint_array!($($lint),*) }
+        }
+    };
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="earlylintpass-与-latelintpass"><a class="header" href="#earlylintpass-与-latelintpass">EarlyLintPass 与 LateLintPass</a></h3>
+<p>前面关于 <code>LintPass</code> 的宏之中，只定义了<code>fn name()</code>和 <code>fn get_lints()</code> 方法，但并没有定义用于检查的 <code>check_*</code> 函数。这是因为 Rustc 中将 <code>LintPass</code> 分为了更为具体的两类：<code>EarlyLintPass</code>和<code>LateLintPass</code>。其主要区别在于检查的元素是否带有类型信息，即在类型检查之前还是之后执行。例如， <code>WhileTrue</code> 检查代码中的 <code>while true{...}</code> 并提示用户使用 <code>loop{...}</code> 去代替。这项检查不需要任何的类型信息，因此被定义为一个  <code>EarlyLint</code>(代码中 <code>impl EarlyLintPass for WhileTrue</code>。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>declare_lint! {
+    WHILE_TRUE,
+    Warn,
+    &quot;suggest using `loop { }` instead of `while true { }`&quot;
+}
+
+declare_lint_pass!(WhileTrue =&gt; [WHILE_TRUE]);
+
+impl EarlyLintPass for WhileTrue {
+    fn check_expr(&amp;mut self, cx: &amp;EarlyContext&lt;'_&gt;, e: &amp;ast::Expr) {
+        ...
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Rustc 中用了3个宏去定义 <code>EarlyLintPass</code>：</p>
+<ul>
+<li>early_lint_methods：early_lint_methods 中定义了 <code>EarlyLintPass</code> 中需要实现的 <code>check_*</code>函数，并且将这些函数以及接收的参数 <code>$args</code>传递给下一个宏。</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! early_lint_methods {
+    ($macro:path, $args:tt) =&gt; (
+        $macro!($args, [
+            fn check_param(a: &amp;ast::Param);
+            fn check_ident(a: &amp;ast::Ident);
+            fn check_crate(a: &amp;ast::Crate);
+            fn check_crate_post(a: &amp;ast::Crate);
+            ...
+        ]);
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li>declare_early_lint_pass：生成trait <code>EarlyLintPass</code> 并调用宏 <code>expand_early_lint_pass_methods</code>。</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! declare_early_lint_pass {
+    ([], [$($methods:tt)*]) =&gt; (
+        pub trait EarlyLintPass: LintPass {
+            expand_early_lint_pass_methods!(&amp;EarlyContext&lt;'_&gt;, [$($methods)*]);
+        }
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li>expand_early_lint_pass_methods：为<code>check_*</code>方法提供默认实现，即空检查。</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! expand_early_lint_pass_methods {
+    ($context:ty, [$($(#[$attr:meta])* fn $name:ident($($param:ident: $arg:ty),*);)*]) =&gt; (
+        $(#[inline(always)] fn $name(&amp;mut self, _: $context, $(_: $arg),*) {})*
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>这样的设计好处有以下几点：</p>
+<ol>
+<li>因为 LintPass 是一个 trait，每一个 LintPass 的定义都需要实现其内部定义的所有方法。但 early lint 和 late lint 发生在编译的不同阶段，函数入参也不一致（AST 和 HIR）。因此，LintPass 的定义只包含了 <code>fn name()</code> 和 <code>fn get_lints()</code> 这两个通用的方法。而执行检查函数则定义在了更为具体的 <code>EarlyLintPass</code> 和 <code>LateLintPass</code> 中。</li>
+<li>同样的，对于 <code>EarlyLintPass</code>， 每一个 lintpass 的定义都必须实现其中的所有方法。但并非每一个 lintpass 都需要检查 AST 的所有节点。 <code>expand_early_lint_pass_methods</code> 为其内部方法提供了默认实现。这样在定义具体的 lintpass 时，只需要关注和实现其相关的检查函数即可。例如，对于 <code>WhileTrue</code> 的定义，因为 <code>while true { }</code>这样的写法只会出现在 <code>ast::Expr</code> 节点中，因此只需要实现 <code>check_expr</code> 函数即可。在其他任何节点调用 <code>WhileTrue</code> 的检查函数，如在检查 AST 上的标识符节点时，调用 <code>WhileTrue.check_ident()</code>，则根据宏 <code>expand_early_lint_pass_methods</code> 中的定义执行一个空函数。</li>
+</ol>
+<h3 id="pass-的含义"><a class="header" href="#pass-的含义">pass 的含义</a></h3>
+<p>在 Rustc 中，除了 <code>Lint</code> 和 <code>LintPass</code> 外，还有一些 <code>*Pass</code> 的命名，如 <code>Mir</code> 和 <code>MirPass</code>、<code>rustc_passes</code> 包等。编译原理龙书中对Pass有对应的解释：</p>
+<blockquote>
+<p>1.2.8 将多个步骤组合成趟
+前面关于步骤的讨论讲的是一个编译器的逻辑组织方式。在一个特定的实现中，多个步骤的活动可以被组合成一趟（pass）。每趟读入一个输入文件并产生一个输出文件。</p>
+</blockquote>
+<p>在声明 <code>LintPass</code> 的宏 <code>declare_lint_pass</code> 中，其第二个参数为一个列表，表示一个 lintpass 可以生成多个 lint。Rustc 中还有一些 CombinedLintPass 中也是将所有 builtin 的 lint 汇总到一个 lintpass 中。这与龙书中“趟”的定义基本一致:<code>LintPass</code> 可以组合多个 <code>Lint</code> 的检查，每个 LintPass 读取一个 AST 并产生对应的结果。</p>
+<h2 id="lint-的简单实现"><a class="header" href="#lint-的简单实现">Lint 的简单实现</a></h2>
+<p>在 LintPass 的定义中，给每一个 lintpass 的所有 <code>check_*</code> 方法都提供了一个默认实现。到这里为止，基本上已经可以实现 Lint 检查的功能。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Linter { }
+impl ast_visit::Visitor for Linter {
+    fn visit_crate(a: ast:crate){
+        for lintpass in lintpasses{
+            lintpass.check_crate(a)
+        }
+        walk_crate();
+    }
+    fn visit_stmt(a: ast:stmt){
+        for lintpass in lintpasses{
+            lintpass.check_stmt(a)
+        }
+        walk_stmt();
+    }
+    ...
+}
+
+let linter = Linter::new();
+
+for c in crates{
+    linter.visit_crate(c);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>Visitor</code> 是遍历 AST 的工具，在这里为 Linter 实现其中的 <code>visit_*</code> 方法，在遍历时调用所有 lintpass 的 <code>check_*</code> 函数。<code>walk_*</code> 会继续调用其他的 <code>visit_*</code> 函数，遍历其中的子节点。因此，对于每一个 crate， 只需要调用 <code>visit_crate()</code> 函数就可以遍历 AST 并完成检查。</p>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>本文简单介绍了 Rustc 源码中关于 Lint 的几个重要结构。并以 <code>WhileTrue</code> 为例说明了 Rustc 如何中定义和实现一个 <code>Lint</code>，最后基于这些结构，提供了一个简易的 Lint 检查的实现方式。希望能够对理解 Rustc 及 Lint 有所帮助，如有错误，欢迎指正。KCL 的 Lint 工具也参考了其中部分设计， 由文末简易的 Linter 结构改进而成。篇幅限制，将后续的文章将继续介绍 Rustc 中 Lint 在编译过程中的注册和执行过程，如何继续优化上述 <code>Linter</code> 的实现，以及 KCL Lint 的设计和实践，期待继续关注。</p>
+<h2 id="ref"><a class="header" href="#ref">Ref</a></h2>
+<ul>
+<li>KusionStack: <a href="https://github.com/KusionStack">https://github.com/KusionStack</a></li>
+<li>Rustc: <a href="https://github.com/rust-lang/rust">https://github.com/rust-lang/rust</a></li>
+<li>rustc-dev-guide: <a href="https://rustc-dev-guide.rust-lang.org/">https://rustc-dev-guide.rust-lang.org/</a></li>
+<li>Rust Visitor: <a href="https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast/visit/index.html">https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast/visit/index.html</a></li>
+<li>Rust Clippy: <a href="https://github.com/rust-lang/rust-clippy">https://github.com/rust-lang/rust-clippy</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="combinedlintpass"><a class="header" href="#combinedlintpass">CombinedLintPass</a></h1>
+<h2 id="combinedlintpass-1"><a class="header" href="#combinedlintpass-1">CombinedLintpass</a></h2>
+<p>Rustc 在 <code>LintPass</code> 的中实现了 <code>Lint</code> 工具检查的具体逻辑。并且使用 Visitor 模式遍历 AST 的同时调用 lintpass 中的 <code>check_*</code>方法。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl ast_visit::Visitor for Linter {
+    fn visit_crate(a: ast:crate){
+        for lintpass in lintpasses{
+            lintpass.check_crate(a)
+        }
+        walk_crate();
+    }
+    fn visit_stmt(a: ast:stmt){
+        for lintpass in lintpasses{
+            lintpass.check_stmt(a)
+        }
+        walk_stmt();
+    }
+    ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>但是，Rustc 自身和 clippy 提供的 Lint 定义多达550+多个。考虑到性能因素，定义大量的 LintPass，分别注册和调用显然是不合适的。Rustc 提供了一种更优的解决方法：既然可以将多个 Lint 组织为一个 LintPass，同样也可以将多个 LintPass 组合成一个 CombinedLintPass。</p>
+<blockquote>
+<p><a href="https://rustc-dev-guide.rust-lang.org/diagnostics/lintstore.html#compiler-lint-passes-are-combined-into-one-pass">Compiler lint passes are combined into one pass</a>
+Within the compiler, for performance reasons, we usually do not register dozens of lint passes. Instead, we have a single lint pass of each variety (e.g., BuiltinCombinedModuleLateLintPass) which will internally call all of the individual lint passes; this is because then we get the benefits of static over dynamic dispatch for each of the (often empty) trait methods.
+Ideally, we'd not have to do this, since it adds to the complexity of understanding the code. However, with the current type-erased lint store approach, it is beneficial to do so for performance reasons.</p>
+</blockquote>
+<h3 id="builtincombinedearlylintpass"><a class="header" href="#builtincombinedearlylintpass">BuiltinCombinedEarlyLintPass</a></h3>
+<p>CombinedLintPass 同样分为 early 和 late 两类。 以 builtin 的 early lint 为例，Rustc 在 <code>rustc_lint::src::lib.rs</code> 中为这些 lintpass 定义了一个 <code>BuiltinCombinedEarlyLintPass</code> 结构。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>early_lint_passes!(declare_combined_early_pass, [BuiltinCombinedEarlyLintPass]);
+<span class="boring">}
+</span></code></pre></pre>
+<p>虽然这个定义看起来只有一行，但其中通过若干个宏的展开，汇总了14个 <code>LintPass</code>，并且每个 <code>LintPass</code> 提供了50多个 <code>check_*</code> 方法。接下来一一说明这些宏。</p>
+<h4 id="builtincombinedearlylintpass-的宏定义"><a class="header" href="#builtincombinedearlylintpass-的宏定义">BuiltinCombinedEarlyLintPass 的宏定义</a></h4>
+<h5 id="early_lint_passes"><a class="header" href="#early_lint_passes">early_lint_passes</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! early_lint_passes {
+    ($macro:path, $args:tt) =&gt; {
+        $macro!(
+            $args,
+            [
+                UnusedParens: UnusedParens,
+                UnusedBraces: UnusedBraces,
+                UnusedImportBraces: UnusedImportBraces,
+                UnsafeCode: UnsafeCode,
+                AnonymousParameters: AnonymousParameters,
+                EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+                NonCamelCaseTypes: NonCamelCaseTypes,
+                DeprecatedAttr: DeprecatedAttr::new(),
+                WhileTrue: WhileTrue,
+                NonAsciiIdents: NonAsciiIdents,
+                HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+                IncompleteFeatures: IncompleteFeatures,
+                RedundantSemicolons: RedundantSemicolons,
+                UnusedDocComment: UnusedDocComment,
+            ]
+        );
+    };
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>首先是 early_lint_passes 宏，这个宏的主要作用是定义了所有的 early lintpass。这里的 lintpass 是成对出现的，<code>:</code>左边为 lintpass 的 Identifier，<code>:</code>右边为 lintpass 的constructor。所以会出现 <code>EllipsisInclusiveRangePatterns::default()</code> 和 <code>DeprecatedAttr::new()</code>这种形式。early_lint_passes 会将定义的 early lintpass 和 第二个参数一起传递给下一个宏。
+通过这个宏，之前的<code>BuiltinCombinedEarlyLintPass</code>的定义被展开为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>declare_combined_early_pass!([BuiltinCombinedEarlyLintPass], [
+                UnusedParens: UnusedParens,
+                UnusedBraces: UnusedBraces,
+                UnusedImportBraces: UnusedImportBraces,
+                UnsafeCode: UnsafeCode,
+                AnonymousParameters: AnonymousParameters,
+                EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+                NonCamelCaseTypes: NonCamelCaseTypes,
+                DeprecatedAttr: DeprecatedAttr::new(),
+                WhileTrue: WhileTrue,
+                NonAsciiIdents: NonAsciiIdents,
+                HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+                IncompleteFeatures: IncompleteFeatures,
+                RedundantSemicolons: RedundantSemicolons,
+                UnusedDocComment: UnusedDocComment,
+            ])
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="declare_combined_early_pass"><a class="header" href="#declare_combined_early_pass">declare_combined_early_pass</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! declare_combined_early_pass {
+    ([$name:ident], $passes:tt) =&gt; (
+        early_lint_methods!(declare_combined_early_lint_pass, [pub $name, $passes]);
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>declare_combined_early_pass 宏接收 early_lint_passes宏传来的 name(BuiltinCombinedEarlyLintPass) 和 passes，并继续传递给 early_lint_methods 宏。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义继续展开为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>early_lint_methods!(declare_combined_early_lint_pass, 
+                    [pub BuiltinCombinedEarlyLintPass, 
+                      [
+                            UnusedParens: UnusedParens,
+                            UnusedBraces: UnusedBraces,
+                            UnusedImportBraces: UnusedImportBraces,
+                            UnsafeCode: UnsafeCode,
+                            AnonymousParameters: AnonymousParameters,
+                            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+                            NonCamelCaseTypes: NonCamelCaseTypes,
+                            DeprecatedAttr: DeprecatedAttr::new(),
+                            WhileTrue: WhileTrue,
+                            NonAsciiIdents: NonAsciiIdents,
+                            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+                            IncompleteFeatures: IncompleteFeatures,
+                            RedundantSemicolons: RedundantSemicolons,
+                            UnusedDocComment: UnusedDocComment,
+               ]
+                    ]);
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="early_lint_methods"><a class="header" href="#early_lint_methods">early_lint_methods</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! early_lint_methods {
+    ($macro:path, $args:tt) =&gt; (
+        $macro!($args, [
+            fn check_param(a: &amp;ast::Param);
+            fn check_ident(a: &amp;ast::Ident);
+            fn check_crate(a: &amp;ast::Crate);
+            fn check_crate_post(a: &amp;ast::Crate);
+            ...
+        ]);
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>early_lint_methods 宏在前一篇文章中也介绍过，它定义了 <code>EarlyLintPass</code> 中需要实现的 <code>check_*</code>函数，并且将这些函数以及接收的参数 <code>$args</code>传递给下一个宏。因为 <code>BuiltinCombinedEarlyLintPass</code> 也是 early lint 的一种，所以同样需要实现这些函数。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义继续展开为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>declare_combined_early_lint_pass!(
+    [pub BuiltinCombinedEarlyLintPass, 
+        [
+            UnusedParens: UnusedParens,
+            UnusedBraces: UnusedBraces,
+            UnusedImportBraces: UnusedImportBraces,
+            UnsafeCode: UnsafeCode,
+            AnonymousParameters: AnonymousParameters,
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+            NonCamelCaseTypes: NonCamelCaseTypes,
+            DeprecatedAttr: DeprecatedAttr::new(),
+            WhileTrue: WhileTrue,
+            NonAsciiIdents: NonAsciiIdents,
+            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+            IncompleteFeatures: IncompleteFeatures,
+            RedundantSemicolons: RedundantSemicolons,
+            UnusedDocComment: UnusedDocComment,
+        ]
+    ],
+    [
+        fn check_param(a: &amp;ast::Param);
+        fn check_ident(a: &amp;ast::Ident);
+        fn check_crate(a: &amp;ast::Crate);
+        fn check_crate_post(a: &amp;ast::Crate);
+        ...
+    ]
+)
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="declare_combined_early_lint_pass"><a class="header" href="#declare_combined_early_lint_pass">declare_combined_early_lint_pass</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! declare_combined_early_lint_pass {
+    ([$v:vis $name:ident, [$($passes:ident: $constructor:expr,)*]], $methods:tt) =&gt; (
+        #[allow(non_snake_case)]
+        $v struct $name {
+            $($passes: $passes,)*
+        }
+        impl $name {
+            $v fn new() -&gt; Self {
+                Self {
+                    $($passes: $constructor,)*
+                }
+            }
+            $v fn get_lints() -&gt; LintArray {
+                let mut lints = Vec::new();
+                $(lints.extend_from_slice(&amp;$passes::get_lints());)*
+                lints
+            }
+        }
+        impl EarlyLintPass for $name {
+            expand_combined_early_lint_pass_methods!([$($passes),*], $methods);
+        }
+        #[allow(rustc::lint_pass_impl_without_macro)]
+        impl LintPass for $name {
+            fn name(&amp;self) -&gt; &amp;'static str {
+                panic!()
+            }
+        }
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>declare_combined_early_lint_pass宏是生成 <code>BuiltinCombinedEarlyLintPass</code> 的主体。这个宏中做了以下工作：</p>
+<ul>
+<li>生成一个名为 <code>BuiltinCombinedEarlyLintPass</code> 的 struct，其中的属性为宏 <code>early_lint_passes</code> 提供的 lintpass 的 identifier。</li>
+<li>实现 <code>fn new()</code> <code>fn name()</code> 和 <code>fn get_lints()</code> 方法。其中 <code>new()</code> 调用了 <code>early_lint_passes</code> 提供的 lintpass 的 constructor。</li>
+<li>调用宏 <code>expand_combined_early_lint_pass_methods</code>，实现自身的 <code>check_*</code> 方法。</li>
+</ul>
+<p>通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义变为：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct BuiltinCombinedEarlyLintPass {
+            UnusedParens: UnusedParens,
+            UnusedBraces: UnusedBraces,
+            UnusedImportBraces: UnusedImportBraces,
+            UnsafeCode: UnsafeCode,
+            AnonymousParameters: AnonymousParameters,
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns,
+            NonCamelCaseTypes: NonCamelCaseTypes,
+            DeprecatedAttr: DeprecatedAttr,
+            WhileTrue: WhileTrue,
+            NonAsciiIdents: NonAsciiIdents,
+            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+            IncompleteFeatures: IncompleteFeatures,
+            RedundantSemicolons: RedundantSemicolons,
+            UnusedDocComment: UnusedDocComment,
+}
+impl BuiltinCombinedEarlyLintPass {
+    pub fn new() -&gt; Self {
+        Self {
+            UnusedParens: UnusedParens,
+            UnusedBraces: UnusedBraces,
+            UnusedImportBraces: UnusedImportBraces,
+            UnsafeCode: UnsafeCode,
+            AnonymousParameters: AnonymousParameters,
+            EllipsisInclusiveRangePatterns: EllipsisInclusiveRangePatterns::default(),
+            NonCamelCaseTypes: NonCamelCaseTypes,
+            DeprecatedAttr: DeprecatedAttr::new(),
+            WhileTrue: WhileTrue,
+            NonAsciiIdents: NonAsciiIdents,
+            HiddenUnicodeCodepoints: HiddenUnicodeCodepoints,
+            IncompleteFeatures: IncompleteFeatures,
+            RedundantSemicolons: RedundantSemicolons,
+            UnusedDocComment: UnusedDocComment,
+        }
+    }
+    pub fn get_lints() -&gt; LintArray {
+        let mut lints = Vec::new();
+        lints.extend_from_slice(&amp;UnusedParens::get_lints());
+        lints.extend_from_slice(&amp;UnusedBraces::get_lints());
+        lints.extend_from_slice(&amp;UnusedImportBraces::get_lints());
+        lints.extend_from_slice(&amp;UnsafeCode::get_lints());
+        lints.extend_from_slice(&amp;AnonymousParameters::get_lints());
+        lints.extend_from_slice(&amp;EllipsisInclusiveRangePatterns::get_lints());
+        lints.extend_from_slice(&amp;NonCamelCaseTypes::get_lints());
+        lints.extend_from_slice(&amp;DeprecatedAttr::get_lints());
+        lints.extend_from_slice(&amp;WhileTrue::get_lints());
+        lints.extend_from_slice(&amp;NonAsciiIdents::get_lints());
+        lints.extend_from_slice(&amp;HiddenUnicodeCodepoints::get_lints());
+        lints.extend_from_slice(&amp;IncompleteFeatures::get_lints());
+        lints.extend_from_slice(&amp;RedundantSemicolons::get_lints());
+        lints.extend_from_slice(&amp;UnusedDocComment::get_lints());
+        
+        lints
+    }
+}
+impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    expand_combined_early_lint_pass_methods!([$($passes),*], $methods);
+}
+#[allow(rustc::lint_pass_impl_without_macro)]
+impl LintPass for BuiltinCombinedEarlyLintPass {
+    fn name(&amp;self) -&gt; &amp;'static str {
+        panic!()
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="expand_combined_early_lint_pass_methods"><a class="header" href="#expand_combined_early_lint_pass_methods">expand_combined_early_lint_pass_methods</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! expand_combined_early_lint_pass_methods {
+    ($passes:tt, [$($(#[$attr:meta])* fn $name:ident($($param:ident: $arg:ty),*);)*]) =&gt; (
+        $(fn $name(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, $($param: $arg),*) {
+            expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+        })*
+    )
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>expand_combined_early_lint_pass_methods宏在 <code>BuiltinCombinedEarlyLintPass</code> 中展开所有 <code>early_lint_methods</code> 中定义的方法。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义变为（省略其他定义）：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    fn check_param(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Param) {
+        expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+    }
+    fn check_ident(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Ident) {
+        expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+    }
+    fn check_crate(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Crate) {
+        expand_combined_early_lint_pass_method!($passes, self, $name, (context, $($param),*));
+    }
+    ...
+    
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h5 id="expand_combined_early_lint_pass_method"><a class="header" href="#expand_combined_early_lint_pass_method">expand_combined_early_lint_pass_method</a></h5>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! expand_combined_early_lint_pass_method {
+    ([$($passes:ident),*], $self: ident, $name: ident, $params:tt) =&gt; ({
+        $($self.$passes.$name $params;)*
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>expand_combined_early_lint_pass_method：在展开的<code>check_*</code> 函数中调用每一个 <code>LintPass</code> 的 <code>check_*</code>。
+通过这个宏，<code>BuiltinCombinedEarlyLintPass</code>的定义变为（省略其他定义）：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    fn check_param(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Param) {
+        self.UnusedParens.check_param(context, a);
+        self.UnusedBraces.check_param(context, a);
+        self.UnusedImportBraces.check_param(context, a);
+        ...
+    }
+    fn check_ident(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Ident) {
+        self.UnusedParens.check_ident(context, a);
+        self.UnusedBraces.check_ident(context, a);
+        self.UnusedImportBraces.check_ident(context, a);
+        ...
+    }
+    fn check_crate(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Crate) {
+        self.UnusedParens.check_crate(context, a);
+        self.UnusedBraces.check_crate(context, a);
+        self.UnusedImportBraces.check_crate(context, a);
+        ...
+    }
+    ...
+    
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h4 id="builtincombinedearlylintpass-的最终定义"><a class="header" href="#builtincombinedearlylintpass-的最终定义">BuiltinCombinedEarlyLintPass 的最终定义</a></h4>
+<p>通过以上宏的展开，<code>BuiltinCombinedEarlyLintPass</code>的定义实际为如下形式：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct BuiltinCombinedEarlyLintPass {
+    UnusedParens: UnusedParens,
+    UnusedBraces: UnusedBraces,
+    ...
+}
+
+impl BuiltinCombinedEarlyLintPass{
+    pub fn new() -&gt; Self {
+        UnusedParens: UnusedParens,
+        UnusedBraces: UnusedBraces,
+        ...
+    }
+    
+    pub fn get_lints() -&gt; LintArray {
+        let mut lints = Vec::new();
+        lints.extend_from_slice(&amp;UnusedParens::get_lints());
+        lints.extend_from_slice(&amp;UnusedBraces::get_lints());
+        ...
+        lints
+    }
+}
+
+impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
+    fn check_crates(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: &amp;ast::Crate){
+        self.UnusedParens.check_crates (context, a);
+        self.UnusedBraces.check_crates (context, a);
+        ...
+    }
+    fn check_ident(&amp;mut self, context: &amp;EarlyContext&lt;'_&gt;, a: Ident){
+        self.UnusedParens.check_ident (context, a);
+        self.UnusedBraces.check_ident (context, a);
+        ...
+    }
+    .. 
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>通过这个定义，可以在遍历 AST 时使用 <code>BuiltinCombinedEarlyLintPass</code> 的 <code>check_*</code> 方法实现多个 lintpass 的检查。</p>
+<h2 id="lint-的进一步优化"><a class="header" href="#lint-的进一步优化">Lint 的进一步优化</a></h2>
+<p>基于 CombinedLintPass ，可以对上一篇文章中提出的 Linter 的设计做进一步优化。
+<img src="rustc/sema/lint/./images/combinedlintpass-01.jpg" alt="Linter" /></p>
+<p>这里，可以用 CombinedLintPass 的<code>check_*</code> 方法，在 Visitor 遍历 AST 时执行对应的检查。虽然效果与之前一致，但因为宏的关系，所有的 <code>check_*</code> 方法和需要执行的 lintpass 都被收集到了一个结构中，也更容易管理。同样的，因为 CombinedLintPass 实际上调用的是每个 lintpass 各自的 check 方法，虽然调用起来可能下图一样很复杂，但因为 lintpass 中定义的 check 方法大部分是由宏生成的空检查，所以也不会造成性能上的损失。
+<img src="rustc/sema/lint/./images/combinedlintpass-02.jpg" alt="调用关系" /></p>
+<h2 id="总结-1"><a class="header" href="#总结-1">总结</a></h2>
+<p>本文简单介绍了 Rustc 源码中关于 <code>CombinedLintPass</code> 这一结构的定义和实现 ，并以此进一步优化 Linter 的设计。希望能够对理解 Rustc 及 Lint 有所帮助，如有错误，欢迎指正。后续的文章将继续介绍 Rustc 中 Lint 在编译过程中的注册和执行过程，期待继续关注。</p>
+<h2 id="ref-1"><a class="header" href="#ref-1">Ref</a></h2>
+<ul>
+<li>KusionStack: <a href="https://github.com/KusionStack">https://github.com/KusionStack</a></li>
+<li>Rustc: <a href="https://github.com/rust-lang/rust">https://github.com/rust-lang/rust</a></li>
+<li>rustc-dev-guide: <a href="https://rustc-dev-guide.rust-lang.org/">https://rustc-dev-guide.rust-lang.org/</a></li>
+<li>Rust Visitor: <a href="https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast/visit/index.html">https://doc.rust-lang.org/nightly/nightly-rustc/rustc_ast/visit/index.html</a></li>
+<li>Rust Clippy: <a href="https://github.com/rust-lang/rust-clippy">https://github.com/rust-lang/rust-clippy</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="lint-的执行流程"><a class="header" href="#lint-的执行流程">Lint 的执行流程</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="resolver"><a class="header" href="#resolver">Resolver</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="hir-lowering"><a class="header" href="#hir-lowering">HIR Lowering</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="类型推导"><a class="header" href="#类型推导">类型推导</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="trait-solving"><a class="header" href="#trait-solving">Trait Solving</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="类型检查"><a class="header" href="#类型检查">类型检查</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="late-lint"><a class="header" href="#late-lint">Late Lint</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mir-lowering"><a class="header" href="#mir-lowering">MIR Lowering</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="借用检查"><a class="header" href="#借用检查">借用检查</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mir-优化"><a class="header" href="#mir-优化">MIR 优化</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="代码生成"><a class="header" href="#代码生成">代码生成</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="通用结构"><a class="header" href="#通用结构">通用结构</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="错误系统"><a class="header" href="#错误系统">错误系统</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sourcemap--span"><a class="header" href="#sourcemap--span">SourceMap &amp; Span</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rust外围工具"><a class="header" href="#rust外围工具">Rust外围工具</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cargo包管理"><a class="header" href="#cargo包管理">Cargo包管理</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wasm包管理"><a class="header" href="#wasm包管理">WASM包管理</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="clippy"><a class="header" href="#clippy">Clippy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rust开源项目"><a class="header" href="#rust开源项目">Rust开源项目</a></h1>
+<ul>
+<li><a href="https://awesome-kusion.github.io/rust-code-book/open-source/KCLVM/index.html">KCLVM</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kclvm"><a class="header" href="#kclvm">KCLVM</a></h1>
+<p>KCLVM（Kusion Configuration Language Virtual Machine）是云原生可编程技术栈 Kusion 的核心组成部分，是 KCL 配置语言编译器前后端实现的统称，用于编译 KCL 配置文件并产生相应的 YAML/JSON 配置。此外 KCL 是一种专用于配置定义、校验的动态强类型配置语言，重点服务于云原生基础设施配置和策略定义场景，即基础设施代码化 IaC（Infrastructure as Code）和策略代码化 PaC（Policy as Code）。</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kcl"><a class="header" href="#kcl">KCL</a></h1>
+<p><img src="https://img.shields.io/badge/license-Apache--2.0-green.svg" alt="license" /></p>
+<p><a href="open-source/KCLVM/./README.html">English</a></p>
+<p>Kusion 配置语言（KCL）是一种开源配置语言，主要用于 <a href="https://kusionstack.io">Kusion Stack</a> 开放协同技术栈。并且 KCL 是一种基于声明性和面向对象编程 (OOP) 范式等概念，用于配置和策略场景的静态类型语言。</p>
+<h2 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h2>
+<ul>
+<li><strong>简单</strong>
+<ul>
+<li>源于 Python、Golang，融入函数语言特性</li>
+<li>吸收语句、表达式、条件、循环等语言元素</li>
+<li>类型和数据分离，Schema 声明配置定义</li>
+</ul>
+</li>
+<li><strong>稳定</strong>
+<ul>
+<li>强不可变约束</li>
+<li>编译时类型推导、类型检查</li>
+<li>Rule 策略定义：以属性为中心的约束表达式、根据约束查询结果</li>
+<li>可测试：语言内置 assert 断言、print 打印和测试工具</li>
+</ul>
+</li>
+<li><strong>可扩展</strong>
+<ul>
+<li>配置合并：编译时配置依赖图代换</li>
+<li>配置属性运算符：满足配置覆盖、合并、添加和删除等需求</li>
+<li>配置复用：丰富的内置数据结构和语法语义，轻松扩展同一份配置到不同场景</li>
+</ul>
+</li>
+<li><strong>工程化</strong>
+<ul>
+<li>Schema 单一继承和声明性模型复用和组装</li>
+<li>工具和API 粒度的配置自动化“增删改查”</li>
+<li>丰富的内置函数和系统库</li>
+<li>顶层数据动态导入</li>
+<li>代码组织：模块和包</li>
+<li><a href="https://github.com/KusionStack/kcl-plugin">插件系统</a>：复用通用编程语言生态。</li>
+<li><a href="https://github.com/KusionStack/kcl-openapi">OpenAPI 模型支持</a>：Swagger 与 Schema 双向转换，Kubernetes CRD 转换为 Schema</li>
+</ul>
+</li>
+<li><strong>高性能</strong>
+<ul>
+<li>配合 LLVM 优化器、支持编译到本地代码和 WASM 等格式并高效执行</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装--文档"><a class="header" href="#安装--文档">安装 &amp; 文档</a></h2>
+<h3 id="如何安装"><a class="header" href="#如何安装">如何安装</a></h3>
+<p>从 Github releases 页面<a href="https://github.com/KusionStack/KCLVM/releases">下载</a>，并且将 <code>{install-location}/kclvm/bin</code> 添加到您的环境变量中</p>
+<h3 id="快速开始"><a class="header" href="#快速开始">快速开始</a></h3>
+<p><code>./samples/fib.k</code> 是一个计算斐波那契数列的例子</p>
+<pre><code class="language-kcl">schema Fib:
+    n1: int = n - 1
+    n2: int = n1 - 1
+    n: int
+    value: int
+
+    if n &lt;= 1:
+        value = 1
+    elif n == 2:
+        value = 1
+    else:
+        value = Fib {n: n1}.value + Fib {n: n2}.value
+
+fib8 = Fib {n: 8}.value
+</code></pre>
+<p>我们可以通过执行如下命令得到 YAML 输出</p>
+<pre><code>kcl ./samples/fib.k
+</code></pre>
+<p>YAML 输出</p>
+<pre><code class="language-yaml">fib8: 21
+</code></pre>
+<h3 id="文档"><a class="header" href="#文档">文档</a></h3>
+<p>更多文档请访问 <a href="https://kusionstack.io">https://kusionstack.io</a></p>
+<h2 id="开发--贡献"><a class="header" href="#开发--贡献">开发 &amp; 贡献</a></h2>
+<h3 id="开发"><a class="header" href="#开发">开发</a></h3>
+<p>参考<a href="open-source/KCLVM/./docs/dev_guide/1.about_this_guide.html">开发手册</a>.</p>
+<h3 id="路线规划"><a class="header" href="#路线规划">路线规划</a></h3>
+<p>参考<a href="https://kusionstack.io/docs/governance/intro/roadmap#kclvm-%E8%B7%AF%E7%BA%BF%E8%A7%84%E5%88%92">KCLVM 路线规划</a></p>
+<h2 id="许可"><a class="header" href="#许可">许可</a></h2>
+<p>Apache License Version 2.0</p>
+<ul>
+<li>KusionStack <a href="https://github.com/KusionStack/kusion">https://github.com/KusionStack/kusion</a></li>
+<li>KusionStack 官网<a href="https://kusionstack.io/">https://kusionstack.io/</a></li>
+<li>KCLVM: <a href="https://github.com/KusionStack/KCLVM">https://github.com/KusionStack/KCLVM</a></li>
+<li>KCLVM dev guide: <a href="https://github.com/KusionStack/KCLVM/issues/61">https://github.com/KusionStack/KCLVM/issues/61</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kclvm-dev-guide"><a class="header" href="#kclvm-dev-guide">KCLVM dev guide</a></h1>
+<h2 id="about-this-guide"><a class="header" href="#about-this-guide">About this Guide</a></h2>
+<p>This guide is intended to help document how <code>KCLVM</code> (the KCL compiler) works, and to help new contributors get involved in KCLVM development.</p>
+<p>This guide consists of <strong>4</strong> parts:</p>
+<ol>
+<li><strong>Building and Testing <code>KCLVM</code></strong>: Contains information that should be useful no matter how you are contributing, about building, testing, debugging, profiling, etc.</li>
+<li><strong>Contributing to <code>KCLVM</code></strong>: Contains information that should be useful no matter how you are contributing, about procedures for contribution, using git and Github, etc.</li>
+<li><strong><code>KCLVM</code> Architecture</strong>: Contains an introduction to the architecture of the compiler and a detailed introduction to each compilation process.</li>
+<li><strong>Appendices</strong>: There are a few of these with different information, including a glossary.</li>
+</ol>
+<p>The Guide itself is of course open-source as well, and the sources can be found at the <a href="https://github.com/KusionStack/KCLVM/tree/main/docs/dev_guide">GitHub repository</a>. If you find any mistakes in the guide, please file an issue about it. Even better, open a Github Pull Request (PR) with a correction!</p>
+<p>If you do contribute to the guide, please see the corresponding subsection on writing documentation in this guide.</p>
+<p>Read <a href="open-source/KCLVM/dev-guide/2.quick_start.html">Quick Start</a> to start.</p>
+<h2 id="other-documentations"><a class="header" href="#other-documentations">Other Documentations</a></h2>
+<ul>
+<li><a href="https://kusionstack.io/docs/reference/lang/lang/tour">KCL Documents</a></li>
+<li><a href="https://github.com/KusionStack/examples">KCL Examples</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h1>
+<p>This documentation is <em>NOT</em> intended to be comprehensive; it is meant to be a quick guide for the most useful things. For more information, see the develop guide in its entirety.</p>
+<h2 id="asking-questions"><a class="header" href="#asking-questions">Asking Questions</a></h2>
+<p>Before asking a question, make sure you have:</p>
+<ul>
+<li>
+<p>Searched open and closed:</p>
+<ul>
+<li><a href="https://github.com/KusionStack/KCLVM/issues?utf8=%E2%9C%93&amp;q=is%3Aissue">KCLVM GitHub Issues</a></li>
+</ul>
+</li>
+<li>
+<p>Read the documentations:</p>
+<ul>
+<li><a href="https://kusionstack.io/docs/reference/lang/lang/tour">KCLVM Documents</a></li>
+<li><a href="https://github.com/KusionStack/KCLVM">KCLVM Readme</a></li>
+</ul>
+</li>
+</ul>
+<p>If you have any questions about <code>KCLVM</code>, you are welcome to ask your questions in <a href="https://github.com/KusionStack/KCLVM/issues">KCLVM Github Issues</a>. When you ask a question, please describe the details as clearly as possible so that others in the KCLVM community can understand, and you <em>MUST</em> be polite and avoid personal attack and avoid not objective comparison with other projects.</p>
+<h2 id="cloning-and-building-kclvm"><a class="header" href="#cloning-and-building-kclvm">Cloning and Building <code>KCLVM</code></a></h2>
+<h3 id="system-requirements"><a class="header" href="#system-requirements">System Requirements</a></h3>
+<p>The following hardware is recommended.</p>
+<ul>
+<li>10GB+ of free disk space.</li>
+<li>4GB+ RAM</li>
+<li>2+ cores</li>
+</ul>
+<h3 id="dependencies"><a class="header" href="#dependencies">Dependencies</a></h3>
+<h4 id="docker"><a class="header" href="#docker">Docker</a></h4>
+<ul>
+<li><code>docker</code></li>
+</ul>
+<p>In the top level of the <code>KusionStack/KCLVM</code> repo and run:</p>
+<pre><code class="language-sh">make sh-in-docker
+</code></pre>
+<p>Using a docker image is our recommended way, of course, you can also configure your local development environment according to the following content.</p>
+<h4 id="macos-and-os-x"><a class="header" href="#macos-and-os-x">macOS and OS X</a></h4>
+<ul>
+<li><code>git</code></li>
+<li><code>Python 3.7+</code></li>
+<li><code>Rust 1.60+</code></li>
+<li><code>LLVM 12</code></li>
+</ul>
+<p>You'll need LLVM installed and <code>llvm-config</code> in your <code>PATH</code>. Just download from <a href="https://releases.llvm.org/download.html">LLVM 12</a> or install <code>llvm@12</code> using <code>brew</code>.</p>
+<pre><code class="language-sh">brew install llvm@12
+</code></pre>
+<p>Add the LLVM installation location to <code>LLVM_SYS_120_PREFIX</code> and the <code>$PATH</code>.</p>
+<pre><code>export LLVM_SYS_120_PREFIX=&lt;your LLVM 12 install location&gt;
+export PATH=&lt;your LLVM 12 install location&gt;/bin:$PATH
+</code></pre>
+<h4 id="linux"><a class="header" href="#linux">Linux</a></h4>
+<ul>
+<li><code>git</code></li>
+<li><code>Rust 1.60+</code></li>
+<li><code>Python3 Building Dependencies</code></li>
+<li><code>LLVM 12</code></li>
+</ul>
+<p>For UNIX based systems, you can run:</p>
+<pre><code>yum groupinstall -y &quot;Development Tools&quot;
+yum install -y gcc patch libffi-devel python-devel zlib-devel bzip2-devel ncurses-devel sqlite-devel 
+yum install -y libpcap-devel xz-devel readline-devel tk-devel gdbm-devel db4-deve
+yum -y install yum-utils
+yum-builddep -y python3
+yum install -y zlib* 
+yum install -y openssl-devel
+yum install -y glibc-static
+
+# clang-12 &amp; llvm-12
+RUN yum -y install clang
+RUN clang --version
+RUN yum -y install llvm-devel
+RUN yum -y install libffi-devel
+RUN ln -s /usr/lib64/libtinfo.so.6 /usr/lib64/libtinfo.so
+</code></pre>
+<p>On Debian, Ubuntu, and other apt based systems, you can run:</p>
+<pre><code>apt-get update
+
+apt-get install -y git wget curl
+apt-get install -y make gcc patch 
+apt-get install -y python-dev libffi-dev
+apt-get install -y zlib1g-dev ncurses-dev build-essential libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
+
+# clang-12 &amp; llvm-12
+RUN apt-get install -y clang-12 lld-12
+RUN ln -sf /usr/bin/clang-12   /usr/bin/clang
+RUN ln -sf /usr/bin/wasm-ld-12 /usr/bin/wasm-ld
+</code></pre>
+<h4 id="windows"><a class="header" href="#windows">Windows</a></h4>
+<ul>
+<li><code>git</code></li>
+<li><code>Rust 1.60+</code></li>
+<li><code>Python 3.7+</code></li>
+<li><code>LLVM 12</code></li>
+</ul>
+<p>Please add the LLVM installation location to <code>LLVM_SYS_120_PREFIX</code> and the <code>$PATH</code>.</p>
+<h3 id="cloning"><a class="header" href="#cloning">Cloning</a></h3>
+<p>You can just do a normal git clone:</p>
+<pre><code class="language-sh">git clone https://github.com/KusionStack/KCLVM.git
+cd KCLVM
+</code></pre>
+<h3 id="building"><a class="header" href="#building">Building</a></h3>
+<p>In the top level of the <code>KusionStack/KCLVM</code> repo and run:</p>
+<pre><code class="language-sh">./run.sh -a build
+</code></pre>
+<h3 id="testing"><a class="header" href="#testing">Testing</a></h3>
+<p>In the top level of the <code>KusionStack/KCLVM</code> repo and run:</p>
+<pre><code>./run.sh -a test
+</code></pre>
+<p>See the chapters on building and testing for more details.</p>
+<h2 id="contributor-procedures"><a class="header" href="#contributor-procedures">Contributor Procedures</a></h2>
+<h3 id="create-an-issue"><a class="header" href="#create-an-issue">Create an Issue</a></h3>
+<p>Every change should be accompanied by a dedicated tracking issue for that change. The main text of this issue should describe the change being made, with a focus on what users must do to fix their code. The issue should be approachable and practical; it may make sense to direct users to some other issue for the full details. The issue also serves as a place where users can comment with questions or other concerns.</p>
+<p>When you open an issue on the <code>KusionStack/KCLVM</code> repo, you need to to choose an issue template on this <a href="https://github.com/KusionStack/KCLVM/issues/new/choose">page</a>, you can choose a template according to different situations and fill in the corresponding content, and you also need to select appropriate labels for your issue to help classify and identify.</p>
+<h3 id="create-a-pr"><a class="header" href="#create-a-pr">Create a PR</a></h3>
+<p>When you open a PR on the <code>KusionStack/KCLVM</code> repo, you need to assign reviewers in the <a href="https://github.com/orgs/KusionStack/teams/kcl-dev">KCL Dev Team</a> list, and reviewers are the persons that will approve the PR to be tested and merged.</p>
+<p>Please note that all code changes in the KCLVM project require corresponding comments and tests. For more code and test writing details, please see the chapters on code of conduct and testing.</p>
+<p>Besides, all PRs need to have corresponding issues tracking, and need to add appropriate labels and milestone information.</p>
+<h4 id="bug-fixes-or-normal-code-changes"><a class="header" href="#bug-fixes-or-normal-code-changes">Bug Fixes or &quot;Normal&quot; Code Changes</a></h4>
+<p>For most PRs, no special procedures are needed. You can just open an issue and a PR, and it will be reviewed, approved, and merged. This includes most bug fixes, refactorings, and other user-invisible changes.</p>
+<p>Also, note that it is perfectly acceptable to open WIP PRs or GitHub Draft PRs. Some people prefer to do this so they can get feedback along the way or share their code with a collaborator. Others do this so they can utilize the CI to build and test their PR (e.g. if you are developing on a laptop).</p>
+<h4 id="new-features"><a class="header" href="#new-features">New Features</a></h4>
+<p>In order to implement a new feature, usually you will need to go through <a href="https://github.com/KusionStack/KEP">the KEP process</a> to propose a design, have discussions, etc.</p>
+<p>After a feature is approved to be added, a tracking issue is created on the <code>KusionStack/KCLVM</code> repo, which tracks the progress towards the implementation of the feature, any bugs reported, and eventually stabilization. The feature then can be implemented.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="附录"><a class="header" href="#附录">附录</a></h1>
+
+
+                        <!-- 公众号 -->
+                        <hr>
+                                                <div id="giscus-container"></div>
+                        <footer class="page-footer">
+                            <span>© 2022 | <a href="https://github.com/awesome-kusion/rust-code-book"> Rust源码剖析中文版</a>, 仅学习交流使用</span>
+                        </footer>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "print.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+                <script type="text/javascript" src="js/custom.js"></script>
+                <script type="text/javascript" src="js/bigPicture.js"></script>
+        
+                        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+                
+    </body>
+</html>

@@ -25,6 +25,8 @@ KCLVM 是我们在 Kusion 这个项目中使用 Rust 开发的语言编译器，
 
 ## 目录
 
+- [序言](preface.md)
+- [简介](intro/readme.md)
 - [Rust编译器](rustc/readme.md)
   - [概述](rustc/overview/readme.md)
   - [命令行解析](rustc/invocation/readme.md)

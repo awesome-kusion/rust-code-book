@@ -69,3 +69,6 @@ Target: Analysis and learn from the source code of Rust standard library, Rust c
 ---
 
 [![Star History Chart](https://api.star-history.com/svg?repos=awesome-kusion/rust-code-book&type=Date)](https://star-history.com/#awesome-kusion/rust-code-book&Date)
+
+- Wechat QR code:
+![wechat](wechat.png)

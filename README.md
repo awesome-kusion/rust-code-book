@@ -13,17 +13,15 @@ KCLVM 是我们在 Kusion 这个项目中使用 Rust 开发的语言编译器，
 
 最后，这些文章中的内容大部分是我阅读源码时的一些记录和个人理解，以及 rust-dev-guide 中对应的一些描述。本人水平有限，所以可能会有一些不准确甚至错误的地方，也欢迎大家提 PR/Issue/Discussion，或者下方扫码加群讨论。如果对 Rust 源码有自己分析和见解，同样欢迎提 PR 投稿。
 
-[![Star History Chart](https://api.star-history.com/svg?repos=awesome-kusion/rust-code-book&type=Date)](https://star-history.com/#awesome-kusion/rust-code-book&Date)
-
 ---
 
 ## 电子书
 
+![cover](cover.jpg)
+
 - 代码仓库: [https://github.com/awesome-kusion/rust-code-book](https://github.com/awesome-kusion/rust-code-book)
 - 在线阅读: [https://awesome-kusion.github.io/rust-code-book](https://awesome-kusion.github.io/rust-code-book)
 目标：学习分析 Rust 编译器（Rustc）、标准库、开源项目源代码。
-
-![cover](cover.jpg)
 
 ## 目录
 
@@ -62,8 +60,15 @@ KCLVM 是我们在 Kusion 这个项目中使用 Rust 开发的语言编译器，
 
 - [Rust开源项目](open-source/readme.md)
   - [KCLVM](open-source/KCLVM/readme.md)
+    - [KCLVM dev guide[WIP]](open-source/KCLVM/dev-guide/readme.md) &#x1F552;
+      - [about this guide](open-source/KCLVM/dev-guide/1.about_this_guide.md) &#x2705;
+      - [quick start](open-source/KCLVM/dev-guide/2.quick_start.md) &#x2705;
+
+- [附录](appendix/readme.md)
 
 ---
+
+[![Star History Chart](https://api.star-history.com/svg?repos=awesome-kusion/rust-code-book&type=Date)](https://star-history.com/#awesome-kusion/rust-code-book&Date)
 
 - 微信群:
 ![wechat](wechat.png)

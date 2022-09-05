@@ -1,16 +1,5 @@
 # CombinedLintPass
 
-- 时间：2022.9.2
-- 撰稿：[张正（He1pa）](https://github.com/He1pa)@[KusionStack开发组](https://github.com/KusionStack/kusion)
-  
----
-
-## 背景
-
-在 [KusionStack](https://github.com/KusionStack/kusion) 技术栈中， KCL 配置策略语言是重要的组成部分之一。为了帮助用户更好的编写 KCL 代码，我们也为 KCL 语言开发了一些语言工具，Lint 就是其中一种。Lint 工具帮助用户检查代码中潜在的问题和错误，同时也可以用于自动化的代码检查，保障仓库代码规范和质量。因为 KCL 语言由 Rust 实现，一些功能也学习和参考了 Rustc。本文是在学习 Rustc 过程中的一些思考和沉淀，在这里做一些分享。
-
-[前一篇文章](https://github.com/awesome-kusion/rust-code-book/blob/main/rust-tools/lint/lint-pass.md) 介绍了关于 `Lint` 和 `LintPass` 的一些概念和实现。基于这些结构，提供了一个简易的 `Lint` 检查的实现方式。本文主要介绍 `CombinedLintPass` 这一结构的实现，并基于 `CombinedLintPass` 进一步优化 `Lint` 的实现。
-
 ## CombinedLintpass
 
 Rustc 在 `LintPass` 的中实现了 `Lint` 工具检查的具体逻辑。并且使用 Visitor 模式遍历 AST 的同时调用 lintpass 中的 `check_*`方法。

@@ -1,6 +1,6 @@
-# Catalog
+[Rust Source Code Analysis](index.md)
+[Preface](preface.md)
 
-- [Preface](preface.md)
 - [Intro](intro/readme.md)
 - [Standard Library](stdlib/readme.md)
 - [Rust Compiler](rustc/readme.md)

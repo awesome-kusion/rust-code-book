@@ -26,7 +26,8 @@ Target: Analysis and learn from the source code of Rust standard library, Rust c
 
 ## Catalog
 
-- [Preface](preface.md)
+[Preface](preface.md)
+
 - [Intro](intro/readme.md)
 - [Standard Library](stdlib/readme.md)
 - [Rust Compiler](rustc/readme.md)

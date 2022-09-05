@@ -19,5 +19,5 @@ Read [Quick Start](2.quick_start.md) to start.
 
 ## Other Documentations
 
-* [KCL Documents](https://kusionstack.io/docs/reference/lang/lang/tour)
-* [KCL Examples](https://github.com/KusionStack/examples)
++ [KCL Documents](https://kusionstack.io/docs/reference/lang/lang/tour)
++ [KCL Examples](https://github.com/KusionStack/examples)

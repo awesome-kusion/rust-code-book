@@ -39,6 +39,7 @@
 
 - [Rust开源项目](open-source/readme.md)
   - [KCLVM](open-source/KCLVM/readme.md)
+    - [KCL](open-source/KCLVM/KCL.md)
     - [KCLVM dev guide](open-source/KCLVM/dev-guide/readme.md)
       - [quick start](open-source/KCLVM/dev-guide/quick_start.md)
 

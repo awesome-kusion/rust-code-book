@@ -173,18 +173,17 @@
 <div style="break-before: page; page-break-before: always;"></div><h1 id="语法分析"><a class="header" href="#语法分析">语法分析</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sema"><a class="header" href="#sema">Sema</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="lint"><a class="header" href="#lint">Lint</a></h1>
-<h1 id="lint-与-lintpass"><a class="header" href="#lint-与-lintpass">Lint 与 LintPass</a></h1>
-<h2 id="背景"><a class="header" href="#背景">背景</a></h2>
-<p>Lint 是代码静态分析工具的一种，最早是来源于 C 语言。Lint 工具通常会检查代码中潜在的问题和错误，包括（但不限于）编程风格（缩进、空行、空格）、代码质量（定义未使用的变量、文档缺失）以及错误代码（除0错误、重复定义、循环引用）等问题。通常来说，Lint 工具除了标识错误外，还会带有一定的 fix/refactor suggest 和 auto-fix 的能力。在工程中引入 Lint 工具可以有效的减少错误，提高整体的工程质量。此外，对一种编程语言来说，Lint 工具通常也是其他工具研发的前置条件，例如 IDE 插件的错误提示，CI 的 Pipeline 检测等。</p>
+<h2 id="background"><a class="header" href="#background">Background</a></h2>
+<p>Lint is a kind of static analysis tools, which originated from C language. Lint tools usually check potential problems and errors in code, including (but not limited to) programming style (indentation, blank lines, spaces), code quality (unused variables, missing documents), and error codes (division by zero, duplicate definitions, circular references). Generally speaking, in addition to identifying errors, lint tools also have some fix / refactor suggest and auto fix capabilities. Using lint tools in the project can effectively reduce errors and improve the project quality. In addition, for a programming language, the lint tool is usually a prerequisite for the development of other tools, such as the error prompt of IDE plug-ins(e.g., LSP) and the pipeline detection of CI.</p>
 <h2 id="lint-vs-lintpass"><a class="header" href="#lint-vs-lintpass">Lint vs. LintPass</a></h2>
-<h3 id="概念与关系"><a class="header" href="#概念与关系">概念与关系</a></h3>
-<p>Rustc 中关于 Lint 最主要的结构有两个， <code>Lint</code> 和 <code>LintPass</code>。首先需要区分 Lint 和 LintPass 的概念。Rustc 的很多文档中都将它们统称为 <code>Lint</code>，这很容易造成混淆。关于这两者之间的区别，rustc-dev-guide 给出的解释是：</p>
+<h3 id="definition"><a class="header" href="#definition">Definition</a></h3>
+<p>There are two main structures about lint in rustc, <code>Lint</code> and <code>LintPass</code>. First, we need to distinguish the concepts of Lint and LintPass. In many documents of rustc, they are both referred to as 'Lint', which is easy to cause confusion. The difference between them is explained by rustc-dev-guide as follows:</p>
 <blockquote>
 <p>Lint declarations don't carry any &quot;state&quot; - they are merely global identifiers and descriptions of lints. We assert at runtime that they are not registered twice (by lint name).
 Lint passes are the meat of any lint.</p>
 </blockquote>
-<p>从定义方面， <code>Lint</code> 是对所定义的 lint 检查的静态描述，例如 name, level, description, code 等属性，与检查时的状态无关，Rustc 用 <code>Lint</code> 的定义做唯一性的检查。而 <code>LintPass</code> 是 <code>Lint</code> 的具体实现，是在检查时调用的 <code>check_*</code> 方法。
-在具体的代码实现方法， <code>Lint</code>定义为一个 Struct，所有 lint 的定义都是此类型的一个实例/对象。而 <code>LintPass</code> 则对应为一个 trait。trait 类似于 java/c++ 中的接口，每一个 lintpass 的定义都需要实现该接口中定义的方法。</p>
+<p>In terms of definition, <code>Lint</code> is just a description of the lint check defined, such as name, level, description, code and other attributes. It does't carry any state of checking. Rustc checks the uniqueness of registered lints at runtime.<code>LintPass</code> is a implementation of <code>lint</code>, which contains the <code>check_*</code> methods that are called when checking.</p>
+<p>In terms of code implementation, <code>Lint</code> is defined as a struct in Rust, and all lint definitions are an instance / object of this struct. And <code>LintPass</code> is a trait. Trait is similar to the interface in Java / C + +. Every definition of lintpass needs to implement the methods defined in the interface.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -206,15 +205,15 @@ pub trait LintPass {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>需要注意的是，尽管刚刚的描述中说到<code>trait</code> 类似于接口而 <code>Lint</code> 是一个 struct，但 <code>Lint</code> 和 <code>LintPass</code> 之间并不是 OO 中一个“类”和它的“方法”的关系。而是在声明 <code>LintPass</code> 会生成一个实现了该 trait 的同名的 struct，该 struct 中的 <code>get_lints()</code> 方法会生成对应的 <code>Lint</code> 定义。</p>
+<p>It should be noted that although we just said that <code>trait</code> is similar to an interface and <code>Lint</code> is a struct, the relationship between <code>Lint</code> and <code>LintPass</code> is not a &quot;class&quot; and its &quot;methods&quot; in OO. Instead, declaring <code>LintPass</code> will generate a struct with the same name, this struct implements the trait , and the <code>get_lints()</code> method in this struct will generate the corresponding <code>Lint</code> definition.</p>
 <p><img src="rustc/sema/lint/./images/lint_lintpass.jpeg" alt="lint vs. lintpass" /></p>
-<p>这与 rustc-dev-guide 的描述也保持了一致:</p>
+<p>This is also consistent with the description of the rustc-dev-guide:</p>
 <blockquote>
 <p>A lint might not have any lint pass that emits it, it could have many, or just one -- the compiler doesn't track whether a pass is in any way associated with a particular lint, and frequently lints are emitted as part of other work (e.g., type checking, etc.).</p>
 </blockquote>
-<h3 id="lint-与-lintpass-的宏定义"><a class="header" href="#lint-与-lintpass-的宏定义">Lint 与 LintPass 的宏定义</a></h3>
-<p>Rustc 为 Lint 和 LintPass 都提供了用于定义其结构的宏。
-定义 Lint 的宏<code>declare_lint</code> 比较简单，可以在<code>rustc_lint_defs::lib.rs</code>中找到。<code>declare_lint</code> 宏解析输入参数，并生成名称为 <code>$NAME</code> 的 Lint struct。</p>
+<h3 id="definition-of-lint-and-lintpass"><a class="header" href="#definition-of-lint-and-lintpass">Definition of Lint and LintPass</a></h3>
+<p>Rustc provides macros for both Lint and LintPass to define their structure.
+The macro <code>declare_lint</code> that defines Lint is simple, it can be found in <code>rustc_lint_defs::lib.rs</code>. The <code>declare_lint</code> macro parses the input arguments and produces a Lint struct named <code>$NAME</code>.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -261,9 +260,9 @@ macro_rules! declare_lint {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>LintPass 的定义涉及到两个宏：</p>
+<p>The definition of LintPass involves two macros:</p>
 <ul>
-<li>declare_lint_pass：生成一个名为<code>$name</code> 的 struct，并且调用 <code>impl_lint_pass</code> 宏。</li>
+<li>declare_lint_pass: Generate a struct named <code>$name</code> and call the macro <code>impl_lint_pass</code>.</li>
 </ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
@@ -277,7 +276,7 @@ macro_rules! declare_lint {
 <span class="boring">}
 </span></code></pre></pre>
 <ul>
-<li>impl_lint_pass：为生成的 <code>LintPass</code> 结构实现<code>fn name()</code>和 <code>fn get_lints()</code> 方法。</li>
+<li>impl_lint_pass: Implements the <code>fn name()</code> and <code>fn get_lints()</code> methods for the generated <code>LintPass</code> structure.</li>
 </ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
@@ -294,8 +293,8 @@ macro_rules! declare_lint {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h3 id="earlylintpass-与-latelintpass"><a class="header" href="#earlylintpass-与-latelintpass">EarlyLintPass 与 LateLintPass</a></h3>
-<p>前面关于 <code>LintPass</code> 的宏之中，只定义了<code>fn name()</code>和 <code>fn get_lints()</code> 方法，但并没有定义用于检查的 <code>check_*</code> 函数。这是因为 Rustc 中将 <code>LintPass</code> 分为了更为具体的两类：<code>EarlyLintPass</code>和<code>LateLintPass</code>。其主要区别在于检查的元素是否带有类型信息，即在类型检查之前还是之后执行。例如， <code>WhileTrue</code> 检查代码中的 <code>while true{...}</code> 并提示用户使用 <code>loop{...}</code> 去代替。这项检查不需要任何的类型信息，因此被定义为一个  <code>EarlyLint</code>(代码中 <code>impl EarlyLintPass for WhileTrue</code>。</p>
+<h3 id="earlylintpass-and-latelintpass"><a class="header" href="#earlylintpass-and-latelintpass">EarlyLintPass and LateLintPass</a></h3>
+<p>In the macro definition of <code>LintPass</code>, only the <code>fn name()</code> and <code>fn get_lints()</code> methods are defined, but the <code>check_*</code> functions for checking are not provided. This is because Rustc divides <code>LintPass</code> into two more specific categories: <code>EarlyLintPass</code> and <code>LateLintPass</code>. The main difference is whether the checked element has type information, i.e. is performed before or after the type checking. For example, <code>WhileTrue</code> checks for <code>while true{...}</code> in the code and prompts the user to use <code>loop{...}</code> instead it. This check does not require any type information and is therefore defined as an <code>EarlyLint</code> (<code>impl EarlyLintPass for WhileTrue</code> in the code.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -314,9 +313,9 @@ impl EarlyLintPass for WhileTrue {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>Rustc 中用了3个宏去定义 <code>EarlyLintPass</code>：</p>
+<p>Rustc uses 3 macros to define <code>EarlyLintPass</code>:</p>
 <ul>
-<li>early_lint_methods：early_lint_methods 中定义了 <code>EarlyLintPass</code> 中需要实现的 <code>check_*</code>函数，并且将这些函数以及接收的参数 <code>$args</code>传递给下一个宏。</li>
+<li>early_lint_methods: early_lint_methods defines the <code>check_*</code> functions that need to be implemented in <code>EarlyLintPass</code>, and passes these functions and the received parameters <code>$args</code> to the next macro.</li>
 </ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
@@ -335,7 +334,7 @@ impl EarlyLintPass for WhileTrue {
 <span class="boring">}
 </span></code></pre></pre>
 <ul>
-<li>declare_early_lint_pass：生成trait <code>EarlyLintPass</code> 并调用宏 <code>expand_early_lint_pass_methods</code>。</li>
+<li>declare_early_lint_pass: Generate trait <code>EarlyLintPass</code> and call macro <code>expand_early_lint_pass_methods</code>.</li>
 </ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
@@ -350,7 +349,7 @@ impl EarlyLintPass for WhileTrue {
 <span class="boring">}
 </span></code></pre></pre>
 <ul>
-<li>expand_early_lint_pass_methods：为<code>check_*</code>方法提供默认实现，即空检查。</li>
+<li>expand_early_lint_pass_methods: Provides default implementations for <code>check_*</code> methods: nothing to do(<code>{}</code> in code).</li>
 </ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
@@ -362,20 +361,20 @@ impl EarlyLintPass for WhileTrue {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>这样的设计好处有以下几点：</p>
+<p>The benefits are as follows:</p>
 <ol>
-<li>因为 LintPass 是一个 trait，每一个 LintPass 的定义都需要实现其内部定义的所有方法。但 early lint 和 late lint 发生在编译的不同阶段，函数入参也不一致（AST 和 HIR）。因此，LintPass 的定义只包含了 <code>fn name()</code> 和 <code>fn get_lints()</code> 这两个通用的方法。而执行检查函数则定义在了更为具体的 <code>EarlyLintPass</code> 和 <code>LateLintPass</code> 中。</li>
-<li>同样的，对于 <code>EarlyLintPass</code>， 每一个 lintpass 的定义都必须实现其中的所有方法。但并非每一个 lintpass 都需要检查 AST 的所有节点。 <code>expand_early_lint_pass_methods</code> 为其内部方法提供了默认实现。这样在定义具体的 lintpass 时，只需要关注和实现其相关的检查函数即可。例如，对于 <code>WhileTrue</code> 的定义，因为 <code>while true { }</code>这样的写法只会出现在 <code>ast::Expr</code> 节点中，因此只需要实现 <code>check_expr</code> 函数即可。在其他任何节点调用 <code>WhileTrue</code> 的检查函数，如在检查 AST 上的标识符节点时，调用 <code>WhileTrue.check_ident()</code>，则根据宏 <code>expand_early_lint_pass_methods</code> 中的定义执行一个空函数。</li>
+<li>Because <code>LintPass</code> is a trait, every definition of <code>LintPass</code> needs to implement all of its methods. But early lint and late lint occur at different stages of compilation, and the input parameters are also different (AST and HIR). Therefore, the definition of LintPass contains only two general methods <code>fn name()</code> and <code>fn get_lints()</code>. The check methods are defined in the more specific <code>EarlyLintPass</code> and <code>LateLintPass</code>.</li>
+<li>Likewise, for <code>EarlyLintPass</code>, every definition of lintpass must implement all of its methods. But not every lintpass needs to check all nodes of the AST. <code>expand_early_lint_pass_methods</code> provides default implementations for its methods. In this way, when defining a specific lintpass, you only need to pay attention to implement its related check methods. For example, for the definition of <code>WhileTrue</code>, since <code>while true { }</code> only appears in the <code>ast::Expr</code> node, it only needs to implement the <code>check_expr</code> function. Calling the <code>WhileTrue</code> check function at any other node, such as call <code>WhileTrue.check_ident()</code> when checking an identifier node on the AST, will only execute execute an empty methods as defined in the macro <code>expand_early_lint_pass_methods</code>.</li>
 </ol>
-<h3 id="pass-的含义"><a class="header" href="#pass-的含义">pass 的含义</a></h3>
-<p>在 Rustc 中，除了 <code>Lint</code> 和 <code>LintPass</code> 外，还有一些 <code>*Pass</code> 的命名，如 <code>Mir</code> 和 <code>MirPass</code>、<code>rustc_passes</code> 包等。编译原理龙书中对Pass有对应的解释：</p>
+<h3 id="meaning-of-pass"><a class="header" href="#meaning-of-pass">Meaning of pass</a></h3>
+<p>In Rustc, in addition to <code>Lint</code> and <code>LintPass</code>, there are some <code>*Pass</code> naming, such as <code>Mir</code> and <code>MirPass</code>, the <code>rustc_passes</code> package, etc. The <strong>Compilers, Principles, Techiques, &amp; Tools</strong> has a corresponding explanation for Pass:</p>
 <blockquote>
-<p>1.2.8 将多个步骤组合成趟
-前面关于步骤的讨论讲的是一个编译器的逻辑组织方式。在一个特定的实现中，多个步骤的活动可以被组合成一趟（pass）。每趟读入一个输入文件并产生一个输出文件。</p>
+<p>1.2.8 Combine multiple steps into a pass
+The previous discussion of steps was about the logical organization of a compiler. In a particular implementation, the activities of multiple steps can be combined into a pass. Each pass reads in an input file and produces an output file.</p>
 </blockquote>
-<p>在声明 <code>LintPass</code> 的宏 <code>declare_lint_pass</code> 中，其第二个参数为一个列表，表示一个 lintpass 可以生成多个 lint。Rustc 中还有一些 CombinedLintPass 中也是将所有 builtin 的 lint 汇总到一个 lintpass 中。这与龙书中“趟”的定义基本一致:<code>LintPass</code> 可以组合多个 <code>Lint</code> 的检查，每个 LintPass 读取一个 AST 并产生对应的结果。</p>
-<h2 id="lint-的简单实现"><a class="header" href="#lint-的简单实现">Lint 的简单实现</a></h2>
-<p>在 LintPass 的定义中，给每一个 lintpass 的所有 <code>check_*</code> 方法都提供了一个默认实现。到这里为止，基本上已经可以实现 Lint 检查的功能。</p>
+<p>In the macro <code>declare_lint_pass</code> that declares <code>LintPass</code>, its second parameter is a list, indicating that a lintpass can generate multiple lints. There are also some CombinedLintPass in Rustc that also aggregates all builtin lints into one lintpass. This is basically the same as the definition of &quot;pass&quot; in the Dragon Book: <code>LintPass</code> can combine multiple <code>Lint</code> checks, each LintPass reads an AST/HIR and produces a corresponding result.</p>
+<h2 id="simple-design-of-lint"><a class="header" href="#simple-design-of-lint">Simple design of Lint</a></h2>
+<p>In the definition of LintPass, a default implementation is provided for all <code>check_*</code> methods of each lintpass. So far, we can implement a simple Lint tool：</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -403,7 +402,7 @@ for c in crates{
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p><code>Visitor</code> 是遍历 AST 的工具，在这里为 Linter 实现其中的 <code>visit_*</code> 方法，在遍历时调用所有 lintpass 的 <code>check_*</code> 函数。<code>walk_*</code> 会继续调用其他的 <code>visit_*</code> 函数，遍历其中的子节点。因此，对于每一个 crate， 只需要调用 <code>visit_crate()</code> 函数就可以遍历 AST 并完成检查。</p>
+<p><code>Visitor</code> is a tool for traversing the AST. Here, the <code>visit_*</code> methods are implemented for Linter, and all lintpass <code>check_*</code> methods are called during traversal. <code>walk_*</code> will continue to call other <code>visit_*</code> methods to traverse its child nodes. So, for each crate, just call the <code>visit_crate()</code> function to traverse the AST and complete the lint check.</p>
 <h2 id="combinedlintpass"><a class="header" href="#combinedlintpass">CombinedLintpass</a></h2>
 <p>但是，Rustc 自身和 clippy 提供的 Lint 定义多达550+多个。考虑到性能因素，定义大量的 LintPass，分别注册和调用显然是不合适的。Rustc 提供了一种更优的解决方法：既然可以将多个 Lint 组织为一个 LintPass，同样也可以将多个 LintPass 组合成一个 CombinedLintPass。</p>
 <blockquote>

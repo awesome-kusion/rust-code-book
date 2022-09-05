@@ -73,7 +73,7 @@ fib8: 21
 
 ### 文档
 
-更多文档请访问 https://kusionstack.io
+更多文档请访问 <https://kusionstack.io>
 
 ## 开发 & 贡献
 
@@ -89,7 +89,7 @@ fib8: 21
 
 Apache License Version 2.0
 
-- KusionStack <https://github.com/KusionStack/kusion>
-- KusionStack 官网<https://kusionstack.io/>
-- KCLVM: <https://github.com/KusionStack/KCLVM>
-- KCLVM dev guide: <https://github.com/KusionStack/KCLVM/issues/61>
++ KusionStack <https://github.com/KusionStack/kusion>
++ KusionStack 官网<https://kusionstack.io/>
++ KCLVM: <https://github.com/KusionStack/KCLVM>
++ KCLVM dev guide: <https://github.com/KusionStack/KCLVM/issues/61>

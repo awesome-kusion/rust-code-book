@@ -1,4 +1,0 @@
-*.md linguist-language=rust
-*.hbs linguist-detectable=false
-*.js linguist-detectable=false
-*.css linguist-detectable=false

@@ -2,7 +2,7 @@
 # https://github.com/badboy/mdbook-mermaid
 
 [book]
-title = "Rust源码剖析"
+title = "Rust Source Code Analysis"
 authors = ["Rust爱好者"]
 description = "通过分析代码学习Rust"
 language = "zh"

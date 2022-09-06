@@ -229,22 +229,22 @@ for c in crates{
 
 ## CombinedLintpass
 
-但是，Rustc 自身和 clippy 提供的 Lint 定义多达550+多个。考虑到性能因素，定义大量的 LintPass，分别注册和调用显然是不合适的。Rustc 提供了一种更优的解决方法：既然可以将多个 Lint 组织为一个 LintPass，同样也可以将多个 LintPass 组合成一个 CombinedLintPass。
+However, Rustc and Clippy provide more than 550 lint definitions. Considering the performance, it is obviously inappropriate to define a large number of lintpasses, register and call them separately. Rustc provides a better solution: since multiple lints can be organized into one lintpass, multiple lintpasses can also be combined into a CombinedLintPass.
 > [Compiler lint passes are combined into one pass](https://rustc-dev-guide.rust-lang.org/diagnostics/lintstore.html#compiler-lint-passes-are-combined-into-one-pass)
 > Within the compiler, for performance reasons, we usually do not register dozens of lint passes. Instead, we have a single lint pass of each variety (e.g., BuiltinCombinedModuleLateLintPass) which will internally call all of the individual lint passes; this is because then we get the benefits of static over dynamic dispatch for each of the (often empty) trait methods.
 > Ideally, we'd not have to do this, since it adds to the complexity of understanding the code. However, with the current type-erased lint store approach, it is beneficial to do so for performance reasons.
 
 ### BuiltinCombinedEarlyLintPass
 
-CombinedLintPass 同样分为 early 和 late 两类。 以 builtin 的 early lint 为例，Rustc 在 `rustc_lint::src::lib.rs` 中为这些 lintpass 定义了一个 `BuiltinCombinedEarlyLintPass` 结构。
+Combinedlintpass is also divided into early and late. Take builtin's early lint as an example, `rustc_ lint::src::lib.rs` defines a `BuiltinCombinedEarlyLintPass` structure for these lintpasses.
 
 ```rust
 early_lint_passes!(declare_combined_early_pass, [BuiltinCombinedEarlyLintPass]);
 ```
 
-虽然这个定义看起来只有一行，但其中通过若干个宏的展开，汇总了14个 `LintPass`，并且每个 `LintPass` 提供了50多个 `check_*` 方法。接下来一一说明这些宏。
+Although this definition seems to have only one line, it summarizes 14 `LintPass` through the expansion of several macros, and each `LintPass` provides more than 50 'checks_*` method.  Let's explain these macros one by one.
 
-#### BuiltinCombinedEarlyLintPass 的宏定义
+#### Define BuiltinCombinedEarlyLintPass by macros
 
 - early_lint_passes
 
@@ -274,8 +274,9 @@ macro_rules! early_lint_passes {
 }
 ```
 
-首先是 early_lint_passes 宏，这个宏的主要作用是定义了所有的 early lintpass。这里的 lintpass 是成对出现的，`:`左边为 lintpass 的 Identifier，`:`右边为 lintpass 的constructor。所以会出现 `EllipsisInclusiveRangePatterns::default()` 和 `DeprecatedAttr::new()`这种形式。early_lint_passes 会将定义的 early lintpass 和 第二个参数一起传递给下一个宏。
-通过这个宏，之前的`BuiltinCombinedEarlyLintPass`的定义被展开为：
+The first is the macro `early_ lint_ passes`. The main function of this macro is to define all early lintpass. The left side of `:`is the identifier of lintpass, and the right side of `:` is the constructor of lintpass. Therefore, `ellipseinclusiverangepatterns::default()` and `deprecedattr::new()` are differnet from others. `early_ lint_ passes` passes the defined early lintpass to the next macro together with the second parameter.
+
+Through this macro, the previous definition of `BuiltinCombinedEarlyLintPass` is expanded to:
 
 ```rust
 declare_combined_early_pass!([BuiltinCombinedEarlyLintPass], [
@@ -306,8 +307,9 @@ macro_rules! declare_combined_early_pass {
 }
 ```
 
-declare_combined_early_pass 宏接收 early_lint_passes宏传来的 name(BuiltinCombinedEarlyLintPass) 和 passes，并继续传递给 early_lint_methods 宏。
-通过这个宏，`BuiltinCombinedEarlyLintPass`的定义继续展开为：
+Macro `declare_combined_early_pass` receives the name (BuiltinCombinedEarlyLintPass) and passes from macro `early_lint_passes`, and continues to pass them to macro `early_lint_methods`.
+
+Through this macro, the definition of `BuiltinCombinedEarlyLintPass` expand to:
 
 ```rust
 early_lint_methods!(declare_combined_early_lint_pass, 
@@ -347,8 +349,10 @@ macro_rules! early_lint_methods {
 }
 ```
 
-early_lint_methods 宏在前一篇文章中也介绍过，它定义了 `EarlyLintPass` 中需要实现的 `check_*`函数，并且将这些函数以及接收的参数 `$args`传递给下一个宏。因为 `BuiltinCombinedEarlyLintPass` 也是 early lint 的一种，所以同样需要实现这些函数。
-通过这个宏，`BuiltinCombinedEarlyLintPass`的定义继续展开为：
+Macro `early_lint_methods` has been explained earlier. It defines the methods `check_*` which need to be implemented in the `EarlyLintPass`, and pass these methods and the parameter `$args` to the next macro. Because `BuiltinCombinedEarlyLintPass` is also a kind of early lint, it is also necessary to implement these methods.
+
+Through this macro, the definition of 'BuiltinCombinedEarlyLintPass' expand to:
+
 
 ```rust
 declare_combined_early_lint_pass!(
@@ -414,13 +418,13 @@ macro_rules! declare_combined_early_lint_pass {
 }
 ```
 
-declare_combined_early_lint_pass宏是生成 `BuiltinCombinedEarlyLintPass` 的主体。这个宏中做了以下工作：
+Macro `declare_combined_early_lint_pass` is the main structure for generating `BuiltinCombinedEarlyLintPass`. It does the following works:
 
-- 生成一个名为 `BuiltinCombinedEarlyLintPass` 的 struct，其中的属性为宏 `early_lint_passes` 提供的 lintpass 的 identifier。
-- 实现 `fn new()` `fn name()` 和 `fn get_lints()` 方法。其中 `new()` 调用了 `early_lint_passes` 提供的 lintpass 的 constructor。
-- 调用宏 `expand_combined_early_lint_pass_methods`，实现自身的 `check_*` 方法。
+- Generate a struct named `BuiltinCombinedEarlyLintPass`, whose fields is the identifier provided by macro `early_lint_passes`.
+- Implement methods `fn new()` `fn name()` and `fn get_lints()`. The method `new()` uses constructor of lintpass provided by marco `early_lint_passes`.
+- Call the marco `expand_combined_early_lint_pass_methods` to implememt self `check_*` methods.
 
-通过这个宏，`BuiltinCombinedEarlyLintPass`的定义变为：
+Through this macro, the definition of `BuiltinCombinedEarlyLintPass` is changed to:
 
 ```rust
 pub struct BuiltinCombinedEarlyLintPass {
@@ -501,8 +505,9 @@ macro_rules! expand_combined_early_lint_pass_methods {
 }
 ```
 
-expand_combined_early_lint_pass_methods宏在 `BuiltinCombinedEarlyLintPass` 中展开所有 `early_lint_methods` 中定义的方法。
-通过这个宏，`BuiltinCombinedEarlyLintPass`的定义变为（省略其他定义）：
+Marco `expand_combined_early_lint_pass_methods宏在` explands all methods defined in `early_lint_methods`.
+
+Through this macro, the definition of `BuiltinCombinedEarlyLintPass` is changed to(ignore other definitions):
 
 ```rust
 impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
@@ -530,8 +535,9 @@ macro_rules! expand_combined_early_lint_pass_method {
 }
 ```
 
-expand_combined_early_lint_pass_method：在展开的`check_*` 函数中调用每一个 `LintPass` 的 `check_*`。
-通过这个宏，`BuiltinCombinedEarlyLintPass`的定义变为（省略其他定义）：
+Macro `expand_combined_early_lint_pass_method` call `check_*` methods defined in each `LintPass`.
+
+Through this macro, the definition of `BuiltinCombinedEarlyLintPass` is changed to(ignore other definitions):
 
 ```rust
 impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
@@ -558,9 +564,9 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 }
 ```
 
-#### BuiltinCombinedEarlyLintPass 的最终定义
+#### Definition of BuiltinCombinedEarlyLintPass
 
-通过以上宏的展开，`BuiltinCombinedEarlyLintPass`的定义实际为如下形式：
+Through the expansion of the above macro, `BuiltinCombinedEarlyLintPass` is defined as follow:
 
 ```rust
 pub struct BuiltinCombinedEarlyLintPass {
@@ -600,14 +606,17 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 }
 ```
 
-通过这个定义，可以在遍历 AST 时使用 `BuiltinCombinedEarlyLintPass` 的 `check_*` 方法实现多个 lintpass 的检查。
+Through this definition, we can use the `check_*` method of `BuiltinCombinedEarlyLintPass` to run multiple lintpasses when traversing the AST.
 
-## Lint 的进一步优化
+## Optimize the design of lint
 
-基于 CombinedLintPass ，可以对之前提出的 Linter 的设计做进一步优化。
+Based on CombinedLintPass ，we can optimize the design of lint:
 ![Linter](./images/combinedlintpass-01.jpg)
 
-这里，可以用 CombinedLintPass 的`check_*` 方法，在 Visitor 遍历 AST 时执行对应的检查。虽然效果与之前一致，但因为宏的关系，所有的 `check_*` 方法和需要执行的 lintpass 都被收集到了一个结构中，也更容易管理。同样的，因为 CombinedLintPass 实际上调用的是每个 lintpass 各自的 check 方法，虽然调用起来可能下图一样很复杂，但因为 lintpass 中定义的 check 方法大部分是由宏生成的空检查，所以也不会造成性能上的损失。
-![调用关系](./images/combinedlintpass-02.jpg)
+Here, we use `check_*` of CombinedLintPass to run lint check when traversing the AST.
+
+Although the effect is the same as before, because of the macro, all `check_*` methods and lintpass to be executed are collected into a structure, which is easier to manage. Similarly, because combinedlintpass actually calls the check methods of each lintpass, although the call may be as complex as the following figure, but most of the check methods defined in lintpass are empty checks(just a `{}`) generated by macros, there will be no performance loss.
+
+![lint call](./images/combinedlintpass-02.jpg)
 
 ## Lint 的执行流程[WIP]

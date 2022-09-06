@@ -420,7 +420,9 @@ Ideally, we'd not have to do this, since it adds to the complexity of understand
 </span></code></pre></pre>
 <p>虽然这个定义看起来只有一行，但其中通过若干个宏的展开，汇总了14个 <code>LintPass</code>，并且每个 <code>LintPass</code> 提供了50多个 <code>check_*</code> 方法。接下来一一说明这些宏。</p>
 <h4 id="builtincombinedearlylintpass-的宏定义"><a class="header" href="#builtincombinedearlylintpass-的宏定义">BuiltinCombinedEarlyLintPass 的宏定义</a></h4>
-<h5 id="early_lint_passes"><a class="header" href="#early_lint_passes">early_lint_passes</a></h5>
+<ul>
+<li>early_lint_passes</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -472,7 +474,9 @@ Ideally, we'd not have to do this, since it adds to the complexity of understand
             ])
 <span class="boring">}
 </span></code></pre></pre>
-<h5 id="declare_combined_early_pass"><a class="header" href="#declare_combined_early_pass">declare_combined_early_pass</a></h5>
+<ul>
+<li>declare_combined_early_pass</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -509,7 +513,9 @@ Ideally, we'd not have to do this, since it adds to the complexity of understand
                     ]);
 <span class="boring">}
 </span></code></pre></pre>
-<h5 id="early_lint_methods"><a class="header" href="#early_lint_methods">early_lint_methods</a></h5>
+<ul>
+<li>early_lint_methods</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -560,7 +566,9 @@ Ideally, we'd not have to do this, since it adds to the complexity of understand
 )
 <span class="boring">}
 </span></code></pre></pre>
-<h5 id="declare_combined_early_lint_pass"><a class="header" href="#declare_combined_early_lint_pass">declare_combined_early_lint_pass</a></h5>
+<ul>
+<li>declare_combined_early_lint_pass</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -671,7 +679,9 @@ impl LintPass for BuiltinCombinedEarlyLintPass {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h5 id="expand_combined_early_lint_pass_methods"><a class="header" href="#expand_combined_early_lint_pass_methods">expand_combined_early_lint_pass_methods</a></h5>
+<ul>
+<li>expand_combined_early_lint_pass_methods</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -704,7 +714,9 @@ impl LintPass for BuiltinCombinedEarlyLintPass {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h5 id="expand_combined_early_lint_pass_method"><a class="header" href="#expand_combined_early_lint_pass_method">expand_combined_early_lint_pass_method</a></h5>
+<ul>
+<li>expand_combined_early_lint_pass_method</li>
+</ul>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {

@@ -619,4 +619,4 @@ Although the effect is the same as before, because of the macro, all `check_*` m
 
 ![lint call](./images/combinedlintpass-02.jpg)
 
-## Lint 的执行流程[WIP]
+## Execution process[WIP]

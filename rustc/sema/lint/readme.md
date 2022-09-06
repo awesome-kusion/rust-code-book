@@ -246,7 +246,7 @@ early_lint_passes!(declare_combined_early_pass, [BuiltinCombinedEarlyLintPass]);
 
 #### BuiltinCombinedEarlyLintPass 的宏定义
 
-##### early_lint_passes
+- early_lint_passes
 
 ```rust
 macro_rules! early_lint_passes {
@@ -296,7 +296,7 @@ declare_combined_early_pass!([BuiltinCombinedEarlyLintPass], [
             ])
 ```
 
-##### declare_combined_early_pass
+- declare_combined_early_pass
 
 ```rust
 macro_rules! declare_combined_early_pass {
@@ -331,7 +331,7 @@ early_lint_methods!(declare_combined_early_lint_pass,
                     ]);
 ```
 
-##### early_lint_methods
+- early_lint_methods
 
 ```rust
 macro_rules! early_lint_methods {
@@ -380,7 +380,7 @@ declare_combined_early_lint_pass!(
 )
 ```
 
-##### declare_combined_early_lint_pass
+- declare_combined_early_lint_pass
 
 ```rust
 macro_rules! declare_combined_early_lint_pass {
@@ -489,7 +489,7 @@ impl LintPass for BuiltinCombinedEarlyLintPass {
 }
 ```
 
-##### expand_combined_early_lint_pass_methods
+- expand_combined_early_lint_pass_methods
 
 ```rust
 macro_rules! expand_combined_early_lint_pass_methods {
@@ -520,7 +520,7 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 }
 ```
 
-##### expand_combined_early_lint_pass_method
+- expand_combined_early_lint_pass_method
 
 ```rust
 macro_rules! expand_combined_early_lint_pass_method {

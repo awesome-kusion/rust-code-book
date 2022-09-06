@@ -15,7 +15,7 @@ Lint passes are the meat of any lint.
 
 In terms of definition, `Lint` is just a description of the lint check defined, such as name, level, description, code and other attributes. It does't carry any state of checking. Rustc checks the uniqueness of registered lints at runtime.`LintPass` is a implementation of `lint`, which contains the `check_*` methods that are called when checking.
 
-In terms of code implementation, `Lint` is defined as a struct in Rust, and all lint definitions are an instance / object of this struct. And `LintPass` is a trait. Trait is similar to the interface in Java / C + +. Every definition of lintpass needs to implement the methods defined in the interface.
+In terms of code implementation, `Lint` is defined as a struct in Rust, and all lint definitions are an instance of this struct. And `LintPass` is a trait. Trait is similar to the interface in Java / C + +. Every definition of lintpass needs to implement the methods defined in the interface.
 
 ```rust
 /// Specification of a single lint.

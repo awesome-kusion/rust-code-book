@@ -353,7 +353,6 @@ Macro `early_lint_methods` has been explained earlier. It defines the methods `c
 
 Through this macro, the definition of 'BuiltinCombinedEarlyLintPass' expand to:
 
-
 ```rust
 declare_combined_early_lint_pass!(
     [pub BuiltinCombinedEarlyLintPass, 
@@ -619,4 +618,245 @@ Although the effect is the same as before, because of the macro, all `check_*` m
 
 ![lint call](./images/combinedlintpass-02.jpg)
 
-## Execution process[WIP]
+## Execution process
+
+Finally, let's see how lint is executed in Rustc.
+
+### Lint's execution phase in rustc
+
+Rustc's design is basically as same as classic compilers, including lexical analysis, syntax analysis, semantic analysis, IR generation, IR optimization, code generation and other processes. In addition, some special processes, such as borrowing check, have been added to compiler for Rust feature. Correspondingly, the intermediate representation of the code in the whole compilation process also has some extensions:
+
+- Token stream：Lexer converts the character stream of the source code into a stream of lexical units (tokens), which are passed to syntax analysis.
+- Abstract Syntax Tree(AST)：Parser 将 Token 流转换为抽象语法树（AST），抽象语法树几乎可以完全描述源代码中所写的内容。在 AST 上，Rustc 还执行了宏扩展、 early lint 等过程。
+- High-level IR(HIR)：这是一种脱糖的 AST。它仍与源代码中的内容非常接近，但它包含一些隐含的东西，例如一些省略的生命周期等。这个 IR 适合类型检查。late lint也在类型检查之后进行。
+- Typed HIR(THIR)：THIR 与 HIR 类似，但它携带了类型信息，并且更加脱糖（例如，函数调用和隐式的间接引用都会变成完全显式）。
+- Middle-level IR(MIR)：MIR 基本上是一个控制流图（Control-Flow Graph）。CFG 是程序执行过程的抽象表现，代表了程序执行过程中会遍历到的所有路径。它用图的形式表示一个过程内所有基本块可能流向。Rustc 在 MIR 上除了基础的基于 CFG 的静态分析和 IR 优化外，还进行了 Rust 中所有权的借用检查。
+- LLVM IR：Rustc 的后端采用了 LLVM，因此，Rustc 会将 MIR 进一步转化为 LLVM IR 并传递给 LLVM 做进一步优化和代码生成的工作。
+
+以上 Rust 代码的中间表示的转化流程也反映了 Rust 整个编译的流程，总结为一张图：
+![编译流程](images/st0008-01.jpg)
+Rustc 中的 `rustc_driver::lib.rs` 中控制了编译流程的各个阶段：
+
+```bash
+fn run_compiler(...) -> interface::Result<()> {
+    ...
+    interface::run_compiler(config, |compiler| {
+        let linker = compiler.enter(|queries| {
+            ...
+            queries.parse()?;   // lexer parse
+            ...
+            queries.expansion()?; // resolver
+            ...
+            queries.prepare_outputs()?;
+            ...
+            queries.global_ctxt()?; // ast -> hir
+            ...
+            queries.ongoing_codegen()?;
+            ...
+            }
+}
+```
+
+前面介绍过，Rustc 中的 Lint 包含 early 和 late 两种，它们分别在 AST -> HIR 和 HIR -> THIR 两个阶段执行。这里我们同样以 `WhileTrue` 这个例子去看 Lint 从定义、到注册，最后执行的完整的流程。同时，`WhileTrue` 是 builtin 的 early lint 其中的一种，被包含在 `BuiltinCombinedEarlyLintPass` 之中。
+
+### 定义
+
+首先是 `WhileTrue`的 lint 和对应的 lintpass 的定义，它们被定义在  `rustc_lint/src/builtin.rs` 中
+
+```rust
+declare_lint! {
+    /// The `while_true` lint detects `while true { }`.
+    ///
+    /// ### Example
+    ///
+    /// ```rust,no_run
+    /// while true {
+    ///
+    /// }
+    /// ```
+    ///
+    /// {{produces}}
+    ///
+    /// ### Explanation
+    ///
+    /// `while true` should be replaced with `loop`. A `loop` expression is
+    /// the preferred way to write an infinite loop because it more directly
+    /// expresses the intent of the loop.
+    WHILE_TRUE,
+    Warn,
+    "suggest using `loop { }` instead of `while true { }`"
+}
+
+declare_lint_pass!(WhileTrue => [WHILE_TRUE]);
+
+impl EarlyLintPass for WhileTrue {
+    fn check_expr(&mut self, cx: &EarlyContext<'_>, e: &ast::Expr) {
+      ...
+    }
+}
+```
+
+与前面的介绍一样：
+
+1. `declare_lint` 宏声明一个 lint：`WHILE_TRUE`
+1. `declare_lint_pass` 宏声明一个lintpass：`WhileTrue`
+1. 为 `WhileTrue` 实现 `EarlyLintPass` 中对应的检查方法，因为此 lintpass 只检查 Expr 节点，所以只需要实现 `check_expr()`函数即可。
+
+### 注册
+
+注册是指编译过程中将 Lint 加入到 LintStore 的过程。`WhileTrue` 不需要单独的注册和执行，它的检查方法通过宏扩展的方式展开到 `BuiltinCombinedEarlyLintPass` 中。`BuiltinCombinedEarlyLintPass` 的注册和执行都发生在 `queries.expansion()` 函数中。
+
+```rust
+pub fn expansion(
+    &self,
+) -> Result<&Query<(Rc<ast::Crate>, Rc<RefCell<BoxedResolver>>, Lrc<LintStore>)>> {
+    tracing::trace!("expansion");
+    self.expansion.compute(|| {
+        let crate_name = self.crate_name()?.peek().clone();
+        // 注册
+        let (krate, lint_store) = self.register_plugins()?.take(); 
+        let _timer = self.session().timer("configure_and_expand");
+        let sess = self.session();
+        let mut resolver = passes::create_resolver(
+            sess.clone(),
+            self.codegen_backend().metadata_loader(),
+            &krate,
+            &crate_name,
+        );
+        let krate = resolver.access(|resolver| {
+            // 执行
+            passes::configure_and_expand(sess, &lint_store, krate, &crate_name, resolver)
+        })?;
+        Ok((Rc::new(krate), Rc::new(RefCell::new(resolver)), lint_store))
+    })
+}
+```
+
+注册的过程会生成定义的 lint 的结构并添加到 [LintStore](https://rustc-dev-guide.rust-lang.org/diagnostics/lintstore.html) 中。Lint 整体上被分为4个种类：pre-expansion, early, late,  late-module。尽管 Lint 对应的 LintPass 在编译流程中执行的阶段不同，但注册都是发生在同一个阶段。
+Lint 注册过程的函数调用链路如下：
+
+- rustc_driver::lib::run_compiler()
+- rustc_interface::queries::Queries.expansion()
+- rustc_interface::queries::Queries.register_plugins()
+- rustc_lint::lib::new_lint_store()
+- rustc_lint::lib::register_builtins()
+
+在这里，默认的编译流程会执行 else{} 分支中的语句，BuiltinCombinedEarlyLintPass::get_lints() 会生成 `WHILE_TRUE` 并添加到 LintStore中。
+
+```rust
+if no_interleave_lints {
+    pre_expansion_lint_passes!(register_passes, register_pre_expansion_pass);
+    early_lint_passes!(register_passes, register_early_pass);
+    late_lint_passes!(register_passes, register_late_pass);
+    late_lint_mod_passes!(register_passes, register_late_mod_pass);
+} else {
+    store.register_lints(&BuiltinCombinedPreExpansionLintPass::get_lints());
+    store.register_lints(&BuiltinCombinedEarlyLintPass::get_lints());
+    store.register_lints(&BuiltinCombinedModuleLateLintPass::get_lints());
+    store.register_lints(&BuiltinCombinedLateLintPass::get_lints());
+}
+```
+
+### 执行
+
+不同的 LintPass 的执行过程发生在编译过程的不同阶段，其中，`BuiltinCombinedEarlyLintPass` 执行过程的函数调用链路如下：
+
+- rustc_driver::lib::run_compiler()
+- rustc_interface::queries::Queries.expansion()
+- rustc_interface::passes::configure_and_expand()
+- rustc_lint::early::check_ast_node()
+- rustc_lint::early::early_lint_node()
+
+首先，在 configure_and_expand() 函数中，执行了 pre-expansion 和 early 两种 lintpass。注册时使用了 BuiltinCombinedEarlyLintPass::get_lints() 方法生成 lints，而这里用 BuiltinCombinedEarlyLintPass::new() 方法生成了 lintpass。
+
+```rust
+pub fn configure_and_expand(
+    sess: &Session,
+    lint_store: &LintStore,
+    mut krate: ast::Crate,
+    crate_name: &str,
+    resolver: &mut Resolver<'_>,
+) -> Result<ast::Crate> {
+    pre_expansion_lint(sess, lint_store, resolver.registered_tools(), &krate, crate_name);
+    ...
+    sess.time("early_lint_checks", || {
+        let lint_buffer = Some(std::mem::take(resolver.lint_buffer()));
+        rustc_lint::check_ast_node(
+            sess,
+            false,
+            lint_store,
+            resolver.registered_tools(),
+            lint_buffer,
+            rustc_lint::BuiltinCombinedEarlyLintPass::new(),
+            &krate,
+        )
+    });
+}
+```
+
+Lint 的执行最终发生在 `rustc_lint::early::early_lint_node()` 函数中。比较 `early_lint_node()` 函数和 `CombinedLintPass` 一节最后的伪代码：
+
+![early_lint_node与CombinedLintPass](image/../images/st0008-02.jpg)
+
+它们之间有以下的对应关系：
+
+- 参数 pass 是 configure_and_expand() 函数中新建的 BuiltinCombinedEarlyLintPass，它对应 combinedlintpass。
+- EarlyContextAndPass 将  pass 与 context 信息组合在一起，并且实现了 visitor，它对应 Linter。
+- check_node.check(cx) 调用了 cx.pass.check_crate() 进行 lint 检查，根据 BuiltinCombinedEarlyLintPass 的定义， 这个函数中会调用所有 builtin early lint 的 check_crate() 方法，然后执行 ast_visit::walk_crate() 遍历子节点，它对应了 visit_crate()。
+
+### no_interleave_lints
+
+虽然 Rustc 中考虑性能因素，将 LintPass 组合成 CombinedLintPass，但提供了一些编译参数去配置 Lint。其中，Lint 的注册和执行过程中都用到了 no_interleave_lints 参数。这个参数默认为 false，表示是否单独执行每一个 lint。编译时将这个修改这个参数就可以单独注册每一个 lint 以及单独执行 lintpass，这样的设计提供了更好的灵活性和自定义的能力（比如，可以对每一个 lint 单独做 benchmark）。
+
+```rust
+if no_interleave_lints {
+    pre_expansion_lint_passes!(register_passes, register_pre_expansion_pass);
+    early_lint_passes!(register_passes, register_early_pass);
+    late_lint_passes!(register_passes, register_late_pass);
+    late_lint_mod_passes!(register_passes, register_late_mod_pass);
+} else {
+    store.register_lints(&BuiltinCombinedPreExpansionLintPass::get_lints());
+    store.register_lints(&BuiltinCombinedEarlyLintPass::get_lints());
+    store.register_lints(&BuiltinCombinedModuleLateLintPass::get_lints());
+    store.register_lints(&BuiltinCombinedLateLintPass::get_lints());
+}
+```
+
+```rust
+pub fn check_ast_node<'a>(...) {
+    if sess.opts.debugging_opts.no_interleave_lints {
+        for (i, pass) in passes.iter_mut().enumerate() {
+            buffered =
+                sess.prof.extra_verbose_generic_activity("run_lint", pass.name()).run(|| {
+                    early_lint_node(
+                        sess,
+                        !pre_expansion && i == 0,
+                        lint_store,
+                        registered_tools,
+                        buffered,
+                        EarlyLintPassObjects { lints: slice::from_mut(pass) },
+                        check_node,
+                    )
+                });
+        }
+    } else {
+        buffered = early_lint_node(
+            sess,
+            !pre_expansion,
+            lint_store,
+            registered_tools,
+            buffered,
+            builtin_lints,
+            check_node,
+        );
+        ...
+    }
+}
+```
+
+## 总结
+
+至此，我们就分析了 Rustc 中一个 Lint 定义、实现对应的检查(LintPass)、注册、最终执行的完整流程。我们也可以利用这些宏，去定义新的Lint和LintPass(Clippy 中也是以相似的方式)。当然，Rustc 中关于 Lint 的部分远远不止这些，我只是分享了其中我能理解的一小部分，希望能够对大家有所帮助。
+
+除此之外，我们在 [KCLVM](https://github.com/KusionStack/KCLVM) 这个项目中，也有对这部分内容的应用与实践，可以在这个 [Issue](https://github.com/KusionStack/KCLVM/issues/109) 和 [PR](https://github.com/KusionStack/KCLVM/pull/160) 看到更为详细的设计方案和具体实现，包含了visitor模式，lint、lintpass、combinedlintpass的定义，在resolver阶段调用lint检查等实现，欢迎批评指正。
+

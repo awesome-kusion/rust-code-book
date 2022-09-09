@@ -809,8 +809,6 @@ They have the following relationship:
 
 ### no_interleave_lints
 
-虽然 Rustc 中考虑性能因素，将 LintPass 组合成 CombinedLintPass，但提供了一些编译参数去配置 Lint。其中，Lint 的注册和执行过程中都用到了 no_interleave_lints 参数。这个参数默认为 false，表示是否单独执行每一个 lint。编译时将这个修改这个参数就可以单独注册每一个 lint 以及单独执行 lintpass，这样的设计提供了更好的灵活性和自定义的能力（比如，可以对每一个 lint 单独做 benchmark）。
-
 Although Rustc combines lintpass into combinedlintpass in consideration of performance, it provides some compilation parameters to configure lint. Among them, parameter `no_interleave_lints` is used in the registration and execution of lint. This parameter defaults to false, indicating whether to execute each lint separately. By modifying this parameter during compilation, each lint can be registered separately and lintpass can be executed separately. This design provides better flexibility and customization (for example, you can benchmark each lint separately).
 
 ```rust

@@ -861,10 +861,6 @@ pub fn check_ast_node<'a>(...) {
 
 ## Summary
 
-至此，我们就分析了 Rustc 中一个 Lint 定义、实现对应的检查(LintPass)、注册、最终执行的完整流程。我们也可以利用这些宏，去定义新的Lint和LintPass(Clippy 中也是以相似的方式)。当然，Rustc 中关于 Lint 的部分远远不止这些，我只是分享了其中我能理解的一小部分，希望能够对大家有所帮助。
-
-除此之外，我们在 [KCLVM](https://github.com/KusionStack/KCLVM) 这个项目中，也有对这部分内容的应用与实践，可以在这个 [Issue](https://github.com/KusionStack/KCLVM/issues/109) 和 [PR](https://github.com/KusionStack/KCLVM/pull/160) 看到更为详细的设计方案和具体实现，包含了visitor模式，lint、lintpass、combinedlintpass的定义，在resolver阶段调用lint检查等实现，欢迎批评指正。
-
 So far, we have analyzed the complete process of a lint in Rustc, including defining a lint, implementing the corresponding lintpass, registration and execution. We can also use these macros to define new lint and lintpass (in a similar way in clippy). Of course, lint in Rustc is far more than that. I only share a small part of it that I can understand and I have learned. I hope it can help you.
 
 In addition to this, we have parcticed part of this contend in Project [KCLVM](https://github.com/KusionStack/KCLVM). You can find more detailed design and implementation of lint in [issue](https://github.com/KusionStack/KCLVM/issues/109) and [PR](https://github.com/KusionStack/KCLVM/pull/160), including the definition of `visitor`, lint, lintpass, combinedlintpass, and execution of lint in resolver. Welcome for your comments.

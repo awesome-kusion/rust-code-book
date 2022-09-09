@@ -859,6 +859,6 @@ pub fn check_ast_node<'a>(...) {
 
 ## Summary
 
-So far, we have analyzed the complete process of a lint in Rustc, including defining a lint, implementing the corresponding lintpass, registration and execution. We can also use these macros to define new lint and lintpass (in a similar way in clippy). Of course, lint in Rustc is far more than that. I only share a small part of it that I can understand and I have learned. I hope it can help you.
+So far, we have analyzed the complete process of a lint in Rustc, including defining a lint, implementing the corresponding lintpass, registration and execution. We can also use these macros to define new lint and lintpass (e.g., extension in Clippy. It works in a similar way). Of course, lint in Rustc is far more than that. I only share a small part of it that I can understand and I have learned. I hope it can help you.
 
 In addition to this, we have parcticed part of this contend in Project [KCLVM](https://github.com/KusionStack/KCLVM). You can find more detailed design and implementation of lint in [issue](https://github.com/KusionStack/KCLVM/issues/109) and [PR](https://github.com/KusionStack/KCLVM/pull/160), including the definition of `visitor`, lint, lintpass, combinedlintpass, and execution of lint in resolver. Welcome for your comments.

@@ -1041,7 +1041,7 @@ impl EarlyLintPass for WhileTrue {
 <span class="boring">}
 </span></code></pre></pre>
 <h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<p>So far, we have analyzed the complete process of a lint in Rustc, including defining a lint, implementing the corresponding lintpass, registration and execution. We can also use these macros to define new lint and lintpass (in a similar way in clippy). Of course, lint in Rustc is far more than that. I only share a small part of it that I can understand and I have learned. I hope it can help you.</p>
+<p>So far, we have analyzed the complete process of a lint in Rustc, including defining a lint, implementing the corresponding lintpass, registration and execution. We can also use these macros to define new lint and lintpass (e.g., extension in Clippy. It works in a similar way). Of course, lint in Rustc is far more than that. I only share a small part of it that I can understand and I have learned. I hope it can help you.</p>
 <p>In addition to this, we have parcticed part of this contend in Project <a href="https://github.com/KusionStack/KCLVM">KCLVM</a>. You can find more detailed design and implementation of lint in <a href="https://github.com/KusionStack/KCLVM/issues/109">issue</a> and <a href="https://github.com/KusionStack/KCLVM/pull/160">PR</a>, including the definition of <code>visitor</code>, lint, lintpass, combinedlintpass, and execution of lint in resolver. Welcome for your comments.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="codegen"><a class="header" href="#codegen">Codegen</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="general"><a class="header" href="#general">General</a></h1>

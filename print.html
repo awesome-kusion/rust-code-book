@@ -174,16 +174,16 @@
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sema"><a class="header" href="#sema">Sema</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="lint"><a class="header" href="#lint">Lint</a></h1>
 <h2 id="background"><a class="header" href="#background">Background</a></h2>
-<p>Lint is a kind of static analysis tools, which originated from C language. Lint tools usually check potential problems and errors in code, including (but not limited to) programming style (indentation, blank lines, spaces), code quality (unused variables, missing documents), and error codes (division by zero, duplicate definitions, circular references). Generally speaking, in addition to identifying errors, lint tools also have some fix / refactor suggest and auto fix capabilities. Using lint tools in the project can effectively reduce errors and improve the project quality. In addition, for a programming language, the lint tool is usually a prerequisite for the development of other tools, such as the error prompt of IDE plug-ins(e.g., LSP) and the pipeline detection of CI.</p>
+<p>Lint is a kind of static analysis tool, which originated from the C language. Lint tools usually check potential problems and errors in code, including (but not limited to) programming style (indentation, blank lines, spaces), code quality (unused variables, missing documents), and error codes (division by zero, duplicate definitions, circular references). Generally speaking, in addition to identifying errors, lint tools also have some fix/refactor suggest and auto fix capabilities. Using lint tools in the project can effectively reduce errors and improve the project quality. In addition, for a programming language, the lint tool is usually a prerequisite for the development of other tools, such as the error prompt of IDE plug-ins(e.g., LSP) and the pipeline detection of CI.</p>
 <h2 id="lint-vs-lintpass"><a class="header" href="#lint-vs-lintpass">Lint vs. LintPass</a></h2>
 <h3 id="concepts"><a class="header" href="#concepts">Concepts</a></h3>
-<p>There are two main structures about lint in rustc, <code>Lint</code> and <code>LintPass</code>. First, we need to distinguish the concepts of Lint and LintPass. In many documents of rustc, they are both referred to as 'Lint', which is easy to cause confusion. The difference between them is explained by rustc-dev-guide as follows:</p>
+<p>There are two main structures about lint in Rustc, <code>Lint</code> and <code>LintPass</code>. First, we need to distinguish the concepts of Lint and LintPass. In many documents of Rustc, they are both referred to as 'Lint', which is easy to confuse. The difference between them is explained by rustc-dev-guide as follows:</p>
 <blockquote>
 <p>Lint declarations don't carry any &quot;state&quot; - they are merely global identifiers and descriptions of lints. We assert at runtime that they are not registered twice (by lint name).
 Lint passes are the meat of any lint.</p>
 </blockquote>
-<p>In terms of definition, <code>Lint</code> is just a description of the lint check defined, such as name, level, description, code and other attributes. It does't carry any state of checking. Rustc checks the uniqueness of registered lints at runtime.<code>LintPass</code> is a implementation of <code>lint</code>, which contains the <code>check_*</code> methods that are called when checking.</p>
-<p>In terms of code implementation, <code>Lint</code> is defined as a struct in Rust, and all lint definitions are an instance of this struct. And <code>LintPass</code> is a trait. Trait is similar to the interface in Java / C + +. Every definition of lintpass needs to implement the methods defined in the interface.</p>
+<p>In terms of definition, <code>Lint</code> is just a description of the lint check defined, such as name, level, description, code and other attributes. It doesn't carry any state of checking. Rustc checks the uniqueness of registered lints at runtime. <code>LintPass</code> is an implementation of <code>lint</code>, which contains the <code>check_*</code> methods that are called when checking.</p>
+<p>In terms of code implementation, <code>Lint</code> is defined as a struct in Rust, and all lint definitions are an instance of this struct. And <code>LintPass</code> is a trait. The <code>Trait</code> is similar to the interface in Java/C++. Every definition of lintpass needs to implement the methods defined in the interface.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -205,7 +205,7 @@ pub trait LintPass {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>It should be noted that although we just said that <code>trait</code> is similar to an interface and <code>Lint</code> is a struct, the relationship between <code>Lint</code> and <code>LintPass</code> is not a &quot;class&quot; and its &quot;methods&quot; in OO. Instead, declaring <code>LintPass</code> will generate a struct with the same name, this struct implements the trait , and the <code>get_lints()</code> method in this struct will generate the corresponding <code>Lint</code> definition.</p>
+<p>It should be noted that although we just said that <code>trait</code> is similar to an interface and <code>Lint</code> is a struct, the relationship between <code>Lint</code> and <code>LintPass</code> is not a &quot;class&quot; and its &quot;methods&quot; in OO. Instead, declaring <code>LintPass</code> will generate a struct with the same name, this struct implements the trait, and the <code>get_lints()</code> method in this struct will generate the corresponding <code>Lint</code> definition.</p>
 <p><img src="rustc/sema/lint/./images/lint_lintpass.jpeg" alt="lint vs. lintpass" /></p>
 <p>This is also consistent with the description of the rustc-dev-guide:</p>
 <blockquote>
@@ -364,15 +364,15 @@ impl EarlyLintPass for WhileTrue {
 <p>The benefits are as follows:</p>
 <ol>
 <li>Because <code>LintPass</code> is a trait, every definition of <code>LintPass</code> needs to implement all of its methods. But early lint and late lint occur at different stages of compilation, and the input parameters are also different (AST and HIR). Therefore, the definition of LintPass contains only two general methods <code>fn name()</code> and <code>fn get_lints()</code>. The check methods are defined in the more specific <code>EarlyLintPass</code> and <code>LateLintPass</code>.</li>
-<li>Likewise, for <code>EarlyLintPass</code>, every definition of lintpass must implement all of its methods. But not every lintpass needs to check all nodes of the AST. <code>expand_early_lint_pass_methods</code> provides default implementations for its methods. In this way, when defining a specific lintpass, you only need to pay attention to implement its related check methods. For example, for the definition of <code>WhileTrue</code>, since <code>while true { }</code> only appears in the <code>ast::Expr</code> node, it only needs to implement the <code>check_expr</code> function. Calling the <code>WhileTrue</code> check function at any other node, such as call <code>WhileTrue.check_ident()</code> when checking an identifier node on the AST, will only execute execute an empty methods as defined in the macro <code>expand_early_lint_pass_methods</code>.</li>
+<li>Likewise, for <code>EarlyLintPass</code>, every definition of lintpass must implement all of its methods. But not every lintpass needs to check all nodes of the AST. <code>expand_early_lint_pass_methods</code> provides default implementations for its methods. In this way, when defining a specific lintpass, you only need to pay attention to implementing its related check methods. For example, for the definition of <code>WhileTrue</code>, since <code>while true { }</code> only appears in the <code>ast::Expr</code> node, it only needs to implement the <code>check_expr</code> function. Calling the <code>WhileTrue</code> check function at any other node, such as call <code>WhileTrue.check_ident()</code> when checking an identifier node on the AST, will only execute an empty method as defined in the macro <code>expand_early_lint_pass_methods</code>.</li>
 </ol>
 <h3 id="meaning-of-pass"><a class="header" href="#meaning-of-pass">Meaning of pass</a></h3>
-<p>In Rustc, in addition to <code>Lint</code> and <code>LintPass</code>, there are some <code>*Pass</code> naming, such as <code>Mir</code> and <code>MirPass</code>, the <code>rustc_passes</code> package, etc. The <strong>Compilers, Principles, Techiques, &amp; Tools</strong> has a corresponding explanation for Pass:</p>
+<p>In Rustc, in addition to <code>Lint</code> and <code>LintPass</code>, there are some <code>*Pass</code> naming, such as <code>Mir</code> and <code>MirPass</code>, the <code>rustc_passes</code> package, etc. The <strong>Compilers, Principles, Techniques, &amp; Tools</strong> has a corresponding explanation for Pass:</p>
 <blockquote>
 <p>1.2.8 Combine multiple steps into a pass
 The previous discussion of steps was about the logical organization of a compiler. In a particular implementation, the activities of multiple steps can be combined into a pass. Each pass reads in an input file and produces an output file.</p>
 </blockquote>
-<p>In the macro <code>declare_lint_pass</code> that declares <code>LintPass</code>, its second parameter is a list, indicating that a lintpass can generate multiple lints. There are also some CombinedLintPass in Rustc that also aggregates all builtin lints into one lintpass. This is basically the same as the definition of &quot;pass&quot; in the Dragon Book: <code>LintPass</code> can combine multiple <code>Lint</code> checks, each LintPass reads an AST/HIR and produces a corresponding result.</p>
+<p>In the macro <code>declare_lint_pass</code> that declares <code>LintPass</code>, its second parameter is a list, indicating that a lintpass can generate multiple lints. There are also some CombinedLintPass in Rustc that also aggregates all built-in lints into one lintpass. This is basically the same as the definition of &quot;pass&quot; in the Dragon Book: <code>LintPass</code> can combine multiple <code>Lint</code> checks, each LintPass reads an AST/HIR and produces a corresponding result.</p>
 <h2 id="simple-design-of-linter"><a class="header" href="#simple-design-of-linter">Simple design of Linter</a></h2>
 <p>In the definition of LintPass, a default implementation is provided for all <code>check_*</code> methods of each lintpass. So far, we can implement a simple Linter tool：</p>
 <pre><pre class="playground"><code class="language-rust">
@@ -694,7 +694,7 @@ impl LintPass for BuiltinCombinedEarlyLintPass {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>Marco <code>expand_combined_early_lint_pass_methods宏在</code> explands all methods defined in <code>early_lint_methods</code>.</p>
+<p>Marco <code>expand_combined_early_lint_pass_methods</code> explands all methods defined in <code>early_lint_methods</code>.</p>
 <p>Through this macro, the definition of <code>BuiltinCombinedEarlyLintPass</code> is changed to(ignore other definitions):</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
@@ -757,7 +757,7 @@ impl LintPass for BuiltinCombinedEarlyLintPass {
 <span class="boring">}
 </span></code></pre></pre>
 <h4 id="definition-of-builtincombinedearlylintpass"><a class="header" href="#definition-of-builtincombinedearlylintpass">Definition of BuiltinCombinedEarlyLintPass</a></h4>
-<p>Through the expansion of the above macro, <code>BuiltinCombinedEarlyLintPass</code> is defined as follow:</p>
+<p>Through the expansion of the above macro, <code>BuiltinCombinedEarlyLintPass</code> is defined as follows:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -803,12 +803,12 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 <p>Based on CombinedLintPass，we can optimize the design of Linter:
 <img src="rustc/sema/lint/./images/linter.jpg" alt="Linter" /></p>
 <p>Here, we use <code>check_*</code> of CombinedLintPass to run lint check when traversing the AST.</p>
-<p>Although the effect is the same as before, because of the macro, all <code>check_*</code> methods and lintpass to be executed are collected into a structure, which is easier to manage. Similarly, because combinedlintpass actually calls the check methods of each lintpass, although the call may be as complex as the following figure, but most of the check methods defined in lintpass are empty checks(just a <code>{}</code>) generated by macros, there will be no performance loss.</p>
+<p>Although the effect is the same as before, because of the macro, all <code>check_*</code> methods and lintpass to be executed are collected into a structure, which is easier to manage. Similarly, because combinedlintpass actually calls the check methods of each lintpass, although the call may be as complex as the following figure, most of the check methods defined in lintpass are empty checks(just a <code>{}</code>) generated by macros, there will be no performance loss.</p>
 <p><img src="rustc/sema/lint/./images/combinedlintpass.jpg" alt="combinedlintpass" /></p>
-<h2 id="execution-process"><a class="header" href="#execution-process">Execution process</a></h2>
-<p>Finally, let's see how lint is executed in Rustc.</p>
-<h3 id="lints-execution-phase-in-rustc"><a class="header" href="#lints-execution-phase-in-rustc">Lint's execution phase in rustc</a></h3>
-<p>Rustc's design is basically as same as classic compilers, including lexical analysis, syntax analysis, semantic analysis, IR generation, IR optimization, code generation and other processes. In addition, some special processes, such as borrowing check, have been added to compiler for Rust feature. Correspondingly, the intermediate representation of the code in the whole compilation process also has some extensions. I found the explanation of IR in the <a href="https://rustc-dev-guide.rust-lang.org/overview.html#intermediate-representations">rust-dev-guide</a>：</p>
+<h2 id="how-lint-works-in-rustc"><a class="header" href="#how-lint-works-in-rustc">How Lint Works in Rustc</a></h2>
+<p>Finally, let's see how lint works in Rustc.</p>
+<h3 id="lints-execution-phase-in-rustc"><a class="header" href="#lints-execution-phase-in-rustc">Lint's execution phase in Rustc</a></h3>
+<p>Rustc's design is similar to classic compilers, including lexical analysis, syntax analysis, semantic analysis, IR generation, IR optimization, code generation and other processes. In addition, some special processes, such as borrowing check, have been added to the compiler for Rust feature. Correspondingly, the intermediate representation of the code in the whole compilation process also has some extensions. I found the explanation of IR in the <a href="https://rustc-dev-guide.rust-lang.org/overview.html#intermediate-representations">rust-dev-guide</a>：</p>
 <ul>
 <li>Token stream: the lexer produces a stream of tokens directly from the source code. This stream of tokens is easier for the parser to deal with than raw text.</li>
 <li>Abstract Syntax Tree (AST): the abstract syntax tree is built from the stream of tokens produced by the lexer. It represents pretty much exactly what the user wrote. It helps to do some syntactic sanity checking (e.g. checking that a type is expected where the user wrote one).</li>
@@ -842,7 +842,7 @@ impl EarlyLintPass for BuiltinCombinedEarlyLintPass {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>As described previously, lint is divided into early and late, which are executed in stage of AST -&gt; HIR and HIR -&gt; THIR respectively. Here we will also take the example of <code>WhileTrue</code> to see the whole process of Lint from definition to registration and execution. Meanwhile, <code>WhileTrue</code> is one of builtin early lint and is included in <code>BuiltinCombinedEarlyLintPass</code>.</p>
+<p>As described previously, lint is divided into early and late, which are executed in phases of AST -&gt; HIR and HIR -&gt; THIR respectively. Here we will also take the example of <code>WhileTrue</code> to see the whole process of Lint from definition to registration and execution. Meanwhile, <code>WhileTrue</code> is one of built-in early lint and is included in <code>BuiltinCombinedEarlyLintPass</code>.</p>
 <h3 id="definition"><a class="header" href="#definition">Definition</a></h3>
 <p>Definitions of <code>WhileTrue</code>'s lint and lintpass are defined in <code>rustc_lint/src/builtin.rs</code>:</p>
 <pre><pre class="playground"><code class="language-rust">
@@ -884,7 +884,7 @@ impl EarlyLintPass for WhileTrue {
 <ol>
 <li>Macro <code>declare_lint</code> declare a lint: <code>WHILE_TRUE</code></li>
 <li>Macro <code>declare_lint_pass</code> declare a lint: <code>WhileTrue</code></li>
-<li>Implement the <code>check_*</code> methods which defined in <code>EarlyLintPass</code> for<code>WHILE_TRUE</code>. Because this lintpass only checks the expr node, it only needs to implement <code>check_ expr()</code> method.</li>
+<li>Implement the <code>check_*</code> methods defined in <code>EarlyLintPass</code> for<code>WHILE_TRUE</code>. Because this lintpass only checks the expr node, it only needs to implement <code>check_ expr()</code> method.</li>
 </ol>
 <h3 id="registration"><a class="header" href="#registration">Registration</a></h3>
 <p><code>Whiletrue</code> does not require separate registration and execution. Its checking method is expanded into <code>BuiltinCombinedEarlyLintPass</code> by macro. The <code>BuiltinCombinedEarlyLintPass</code> register and execute in the method <code>queries.expansion()</code>.</p>
@@ -916,7 +916,7 @@ impl EarlyLintPass for WhileTrue {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>The registration process will generate a defined lint structure and add it to the <a href="https://rustc-dev-guide.rust-lang.org/diagnostics/lintstore.html">LintStore</a>. Lint is divided into four categories: pre-expansion, early, late and late-module. Although lintpasses are executed at different stages in the compilation process, but registration occurs at the same time.</p>
+<p>The registration process will generate a defined lint structure and add it to the <a href="https://rustc-dev-guide.rust-lang.org/diagnostics/lintstore.html">LintStore</a>. Lint is divided into four categories: pre-expansion, early, late and late-module. Although lintpasses are executed at different stages in the compilation process, registration occurs at the same time.</p>
 <p>The function call of lint registration process is as follows:</p>
 <ul>
 <li>rustc_driver::lib::run_compiler()</li>
@@ -952,7 +952,7 @@ impl EarlyLintPass for WhileTrue {
 <li>rustc_lint::early::early_lint_node()</li>
 </ul>
 <p>首先，在 configure_and_expand() 函数中，执行了 pre-expansion 和 early 两种 lintpass。注册时使用了 BuiltinCombinedEarlyLintPass::get_lints() 方法生成 lints，而这里用 BuiltinCombinedEarlyLintPass::new() 方法生成了 lintpass。</p>
-<p>First, in function <code>configure_ and_expand()</code>, pre expansion and early lintpass are executed. Lints which generated by <code>BuiltinCombinedEarlyLintPass::get_lints()</code> were used for registration, and here, and lintpasses which generated by BuiltinCombinedEarlyLintPass::new() were used for execution.</p>
+<p>First, in function <code>configure_ and_expand()</code>, pre-expansion and early lintpass are executed. Lints which generated by <code>BuiltinCombinedEarlyLintPass::get_lints()</code> were used for registration, and here, and lintpasses which generated by BuiltinCombinedEarlyLintPass::new() were used for execution.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -980,16 +980,16 @@ impl EarlyLintPass for WhileTrue {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>Lint execution finally occurs in function <code>rustc_lint::early::early_lint_node()</code>. Compare <code>early_ lint_ Node()</code> and the pseudo code at the end of the <code>CombinedLintPass</code> section:</p>
+<p>Lint execution finally occurs in function <code>rustc_lint::early::early_lint_node()</code>. Compare <code>early_ lint_ Node()</code> and the pseudo-code at the end of the <code>CombinedLintPass</code> section:</p>
 <p><img src="rustc/sema/lint/images/early_lint_node.jpg" alt="early_lint_node与CombinedLintPass" /></p>
 <p>They have the following relationship:</p>
 <ul>
 <li>The parameter <code>pass</code>  is the <code>BuiltinCombinedEarlyLintPass</code> created in <code>configure_and_expand()</code>. It corresponds to <code>combinedlintpass。</code>.</li>
 <li><code>EarlyContextAndPass</code> combined <code>pass</code> and <code>context</code>, and implement the <code>visitor</code>. It corresponds to <code>Linter</code>.</li>
-<li><code>check_node.check(cx)</code> call <code>cx.pass.check_crate()</code> and execut lint check. According to the definition of <code>BuiltinCombinedEarlyLintPass</code>, this methods will call all <code>check_crate()</code> defined in builtin early lint, and run <code>ast_visit::walk_crate()</code> to  traverses sub node. It corresponds to <code>visit_crate()</code>.</li>
+<li><code>check_node.check(cx)</code> call <code>cx.pass.check_crate()</code> and execute lint check. According to the definition of <code>BuiltinCombinedEarlyLintPass</code>, this method will call all <code>check_crate()</code> defined in builtin early lint, and run <code>ast_visit::walk_crate()</code> to traverses sub-node. It corresponds to <code>visit_crate()</code>.</li>
 </ul>
 <h3 id="no_interleave_lints"><a class="header" href="#no_interleave_lints">no_interleave_lints</a></h3>
-<p>Although Rustc combines lintpass into combinedlintpass in consideration of performance, it provides some compilation parameters to configure lint. Among them, parameter <code>no_interleave_lints</code> is used in the registration and execution of lint. This parameter defaults to false, indicating whether to execute each lint separately. By modifying this parameter during compilation, each lint can be registered separately and lintpass can be executed separately. This design provides better flexibility and customization (for example, you can benchmark each lint separately).</p>
+<p>Although Rustc combines lintpass into combinedlintpass in consideration of performance, it provides some compilation parameters to configure lint. Among them, the parameter <code>no_interleave_lints</code> is used in the registration and execution of lint. This parameter defaults to false, indicating whether to execute each lint separately. By modifying this parameter during compilation, each lint can be registered separately and lintpass can be executed separately. This design provides better flexibility and customization (for example, you can benchmark each lint separately).</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1042,7 +1042,7 @@ impl EarlyLintPass for WhileTrue {
 </span></code></pre></pre>
 <h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
 <p>So far, we have analyzed the complete process of a lint in Rustc, including defining a lint, implementing the corresponding lintpass, registration and execution. We can also use these macros to define new lint and lintpass (e.g., extension in Clippy. It works in a similar way). Of course, lint in Rustc is far more than that. I only share a small part of it that I can understand and I have learned. I hope it can help you.</p>
-<p>In addition to this, we have parcticed part of this contend in Project <a href="https://github.com/KusionStack/KCLVM">KCLVM</a>. You can find more detailed design and implementation of lint in <a href="https://github.com/KusionStack/KCLVM/issues/109">issue</a> and <a href="https://github.com/KusionStack/KCLVM/pull/160">PR</a>, including the definition of <code>visitor</code>, lint, lintpass, combinedlintpass, and execution of lint in resolver. Welcome for your comments.</p>
+<p>In addition to this, we have practiced part of this content in Project <a href="https://github.com/KusionStack/KCLVM">KCLVM</a>. You can find more detailed design and implementation of lint in <a href="https://github.com/KusionStack/KCLVM/issues/109">issue</a> and <a href="https://github.com/KusionStack/KCLVM/pull/160">PR</a>, including the definition of <code>visitor</code>, lint, lintpass, combinedlintpass, and execution of lint in resolver. Welcome for your comments.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="codegen"><a class="header" href="#codegen">Codegen</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="general"><a class="header" href="#general">General</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust-的错误信息输出原理概述"><a class="header" href="#rust-的错误信息输出原理概述">Rust 的错误信息输出原理概述</a></h1>

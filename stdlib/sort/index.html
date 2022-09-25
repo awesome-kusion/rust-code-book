@@ -1,0 +1,412 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Sort: Timsort and pdqsort[WIP: Zh-ver.] - Rust Source Code Analysis</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="通过分析代码学习Rust">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+                <link rel="stylesheet" href="../../style.css">
+        
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../index.html">Rust Source Code Analysis</a></li><li class="chapter-item expanded affix "><a href="../../preface.html">Preface</a></li><li class="chapter-item expanded "><a href="../../intro/index.html"><strong aria-hidden="true">1.</strong> Intro</a></li><li class="chapter-item expanded "><a href="../../stdlib/index.html"><strong aria-hidden="true">2.</strong> Standard Library</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../stdlib/sort/index.html" class="active"><strong aria-hidden="true">2.1.</strong> Sort: Timsort and pdqsort[WIP: Zh-ver.]</a></li></ol></li><li class="chapter-item expanded "><a href="../../rustc/index.html"><strong aria-hidden="true">3.</strong> Rust Compiler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/overview/index.html"><strong aria-hidden="true">3.1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../../rustc/invocation/index.html"><strong aria-hidden="true">3.2.</strong> Invocation</a></li><li class="chapter-item expanded "><a href="../../rustc/lexer/index.html"><strong aria-hidden="true">3.3.</strong> Lexer</a></li><li class="chapter-item expanded "><a href="../../rustc/parser/index.html"><strong aria-hidden="true">3.4.</strong> Parser</a></li><li class="chapter-item expanded "><a href="../../rustc/sema/index.html"><strong aria-hidden="true">3.5.</strong> Sema</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/sema/lint/index.html"><strong aria-hidden="true">3.5.1.</strong> Lint</a></li></ol></li><li class="chapter-item expanded "><a href="../../rustc/codegen/index.html"><strong aria-hidden="true">3.6.</strong> Codegen</a></li><li class="chapter-item expanded "><a href="../../rustc/general/index.html"><strong aria-hidden="true">3.7.</strong> General</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../rustc/general/errors/index.html"><strong aria-hidden="true">3.7.1.</strong> Errors[WIP: Zh-ver.]</a></li><li class="chapter-item expanded "><a href="../../rustc/general/sourcemap-span/index.html"><strong aria-hidden="true">3.7.2.</strong> SourceMap &amp; Span[WIP]</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../rust-tools/index.html"><strong aria-hidden="true">4.</strong> Rust Tools</a></li><li class="chapter-item expanded "><a href="../../open-source/index.html"><strong aria-hidden="true">5.</strong> Rust Open Source Project</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../open-source/KCLVM/index.html"><strong aria-hidden="true">5.1.</strong> KCLVM</a></li></ol></li><li class="chapter-item expanded "><a href="../../appendix/index.html"><strong aria-hidden="true">6.</strong> Appendix</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">Rust Source Code Analysis</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/awesome-kusion/rust-code-book/edit/main/./stdlib/sort/readme.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+                    <main>
+                        <!-- 头部 -->
+                                                
+                        <h1 id="排序算法-timsort-和-pdqsort"><a class="header" href="#排序算法-timsort-和-pdqsort">排序算法: Timsort 和 pdqsort</a></h1>
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<p>Rust 中排序算法的实现可以分为稳定和不稳定的两类。其中稳定的排序算法是一种受 Tim Peters 的 <a href="https://en.wikipedia.org/wiki/Timsort">Timsort</a> 算法启发的自适应、迭代归并排序；而不稳定的排序算法则是基于 Orson Peters 的 <a href="https://github.com/orlp/pdqsort">pdqsort</a>[pattern-defeating quicksort]。本文将介绍这两个算法在 Rust 中的实现。</p>
+<h2 id="稳定排序-timsort"><a class="header" href="#稳定排序-timsort">稳定排序： Timsort</a></h2>
+<p>稳定排序是指在排序过程中不改变相等的元素的顺序。 Rust 中的稳定排序的实现是一种改进的 timsort 算法。可以在 <code>libray:alloc:src:slice.rs</code> 中看到它的实现。</p>
+<h3 id="timsort-简介"><a class="header" href="#timsort-简介">Timsort 简介</a></h3>
+<p>Timsort 算法由 Tim Peters 在 2002 年设计，是一种归并和插入排序的混合的排序算法。在最坏的情况，它的时间复杂度为 <em>O</em>(<em>n</em> * log(<em>n</em>))，需要分配排序的数组一半大小的内存空间，所以空间复杂度为 <em>O</em>(<em>n</em>)，所以在各个方面都优于<em>O</em>(<em>n</em>)空间和稳定<em>O</em>(<em>n</em> * log(<em>n</em>))时间的归并排序算法。由于其出色的性能，在 Python 中最先引入，作为 list.sort 的默认实现，后续 Java 也在 JDK1.7 中使用了 Timsort 算法。</p>
+<p>Timsort 算法的基本流程是：</p>
+<ol>
+<li>确定数组的单调上升段和严格单调下降段，并将严格下降段反转</li>
+<li>定义最小片段(run)长度，低于此长度的片段通过插入排序合并到较长的段中</li>
+<li>反复归并相邻片段，直到整个排序完成</li>
+</ol>
+<p>因此，Timsort 基本上是一种归并排序，但是在一些小片段的合并中使用了插入排序。</p>
+<h3 id="算法实现"><a class="header" href="#算法实现">算法实现</a></h3>
+<p>可以在 <code>libray:alloc:src:slice.rs</code> 中看到 Rust 中 Timsort 算法的实现。</p>
+<h4 id="空数组和短数组处理"><a class="header" href="#空数组和短数组处理">空数组和短数组处理</a></h4>
+<p>首先是一些特殊情况的处理：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn merge_sort&lt;T, F&gt;(v: &amp;mut [T], mut is_less: F)
+where
+    F: FnMut(&amp;T, &amp;T) -&gt; bool,
+{
+    // Slices of up to this length get sorted using insertion sort.
+    const MAX_INSERTION: usize = 20;
+        // Sorting has no meaningful behavior on zero-sized types.
+    if T::IS_ZST {
+        return;
+    }
+    let len = v.len();
+    // Short arrays get sorted in-place via insertion sort to avoid allocations.
+    if len &lt;= MAX_INSERTION {
+        if len &gt;= 2 {
+            for i in (0..len - 1).rev() {
+                insert_head(&amp;mut v[i..], &amp;mut is_less);
+            }
+        }
+        return;
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>这段非常容易理解，如果是空数组就直接返回；如果是比较短的数组（低于20），就直接用简单的插入排序。</p>
+<h4 id="扫描数组确定单调片段"><a class="header" href="#扫描数组确定单调片段">扫描数组，确定单调片段</a></h4>
+<p>Timsort 算法的第一步是识别单调片段(run)：单调递增片段和严格单调递减片段，并将严格单调递减片段反转。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn merge_sort&lt;T, F&gt;(v: &amp;mut [T], mut is_less: F)
+where
+    F: FnMut(&amp;T, &amp;T) -&gt; bool,
+{
+    let mut end = len;
+    while end &gt; 0 {
+        let mut start = end - 1;
+        if start &gt; 0 {
+            start -= 1;
+            unsafe {
+                if is_less(v.get_unchecked(start + 1), v.get_unchecked(start)) {
+                    while start &gt; 0 &amp;&amp; is_less(v.get_unchecked(start), v.get_unchecked(start - 1)) {
+                        start -= 1;
+                    }
+                    v[start..end].reverse();
+                } else {
+                    while start &gt; 0 &amp;&amp; !is_less(v.get_unchecked(start), v.get_unchecked(start - 1))
+                    {
+                        start -= 1;
+                    }
+                }
+            }
+        }
+    ...
+    }
+}
+
+
+<span class="boring">}
+</span></code></pre></pre>
+<p>首先从后向前遍历数组，找到单调递增或严格单调递减的段的起点，并将严格单调递减的段反转。以数组<code>[4，5，6, 7, 3(1), 3(2), 1, 0]</code>为例（为了简化掩饰，暂不考虑<code>MAX_INSERTION</code>），首先找到第一个严格单调递减段<code>[3(2), 1, 0]</code>，并将其反转为<code>[0, 1, 3(2)]</code>。</p>
+<h4 id="合并较短的段"><a class="header" href="#合并较短的段">合并较短的段</a></h4>
+<p>在较短的数组上，插入排序的性能优于归并排序。所以 Timsort 算法的第二步是定义最短段长度，并利用插入排序合并较短的段。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn merge_sort&lt;T, F&gt;(v: &amp;mut [T], mut is_less: F)
+where
+    F: FnMut(&amp;T, &amp;T) -&gt; bool,
+{
+    const MIN_RUN: usize = 10;
+    while end &gt; 0 {
+        // omit step 1
+
+        while start &gt; 0 &amp;&amp; end - start &lt; MIN_RUN {
+            start -= 1;
+            insert_head(&amp;mut v[start..end], &amp;mut is_less);
+        }
+        runs.push(Run { start, len: end - start });
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>上述的例子中，同样为了方便演示，假设 <code>MIN_RUN</code> 的值为5。则根据上述代码，使用插入排序在段中插入 <code>7</code> 和 <code>3(1)</code>，则段变为 <code>[0, 1, 3(1), 3(2), 7]</code>。最后将这个段入栈。</p>
+<h4 id="合并相邻段"><a class="header" href="#合并相邻段">合并相邻段</a></h4>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn merge_sort&lt;T, F&gt;(v: &amp;mut [T], mut is_less: F)
+where
+    F: FnMut(&amp;T, &amp;T) -&gt; bool,
+{
+    const MIN_RUN: usize = 10;
+    while end &gt; 0 {
+        // omit step 1 and step 2
+        while let Some(r) = collapse(&amp;runs) {
+            let left = runs[r + 1];
+            let right = runs[r];
+            unsafe {
+                merge(
+                    &amp;mut v[left.start..right.start + right.len],
+                    left.len,
+                    buf.as_mut_ptr(),
+                    &amp;mut is_less,
+                );
+            }
+            runs[r] = Run { start: left.start, len: left.len + right.len };
+            runs.remove(r + 1);
+        }
+    }
+    fn collapse(runs: &amp;[Run]) -&gt; Option&lt;usize&gt; {
+        let n = runs.len();
+        if n &gt;= 2
+            &amp;&amp; (runs[n - 1].start == 0
+                || runs[n - 2].len &lt;= runs[n - 1].len
+                || (n &gt;= 3 &amp;&amp; runs[n - 3].len &lt;= runs[n - 2].len + runs[n - 1].len)
+                || (n &gt;= 4 &amp;&amp; runs[n - 4].len &lt;= runs[n - 3].len + runs[n - 2].len))
+        {
+            if n &gt;= 3 &amp;&amp; runs[n - 3].len &lt; runs[n - 1].len { Some(n - 3) } else { Some(n - 2) }
+        } else {
+            None
+        }
+    }
+
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>首先看 <code>collapse</code> 函数。这里用 <code>collapse</code> 判断是否有能够合并的段，如果有，则返回其下标 <code>r</code>，如果没有，则返回 <code>None</code>。具体判断的逻辑稍后说明。</p>
+<p>步骤3中根据 <code>collapse</code> 函数的返回结果，使用归并排序合并 <code>runs[r]</code>和 <code>runs[r + 1]</code>，或者重复步骤 1 和步骤 2，继续在栈 <code>runs</code> 中构建新的段。</p>
+<p>刚刚的例子中，栈 <code>runs</code> 中只有一个段 <code>[0, 1, 3(1), 3(2), 7]</code>，显然不能合并，因此重复步骤 1 和步骤 2，在 <code>runs</code> 中添加第二个段，使其变为 <code>[[0, 1, 3(1), 3(2), 7], [4, 5, 6]]</code>(用 <code>[]</code> 表示一个段)。此时 <code>collapse</code> 会返回下标 <code>0</code>，然后使用归并合并 <code>[0, 1, 3(1), 3(2), 7]</code> 和 <code>[4, 5, 6]</code>。得到结果 <code>[0, 1, 3(1), 3(2), 4, 5, 6, 7]</code>，完成整个遍历。</p>
+<h3 id="timsort-算法的-bug"><a class="header" href="#timsort-算法的-bug">Timsort 算法的 bug</a></h3>
+<p>Rust 中的实现并非默认的 Timsort 的算法，这是因为 Timsort 算法存在 bug(http://envisage-project.eu/timsort-specification-and-verification/)。Rust 的实现在 <code>collapse</code> 这个函数做了修改。</p>
+<p>Timsort 算法在 JDK1.7 中引入 Java，但在 1.8 版本仍未修复这个 bug。 比较 Java JDK1.8中对应的实现。Java的实现中只比较了栈顶3个元素，但 Rust 的现实比较了栈顶 4 个元素。</p>
+<pre><code class="language-java">private void mergeCollapse() {
+    while (stackSize &gt; 1) {
+        int n = stackSize - 2;
+        if (n &gt; 0 &amp;&amp; runLen[n - 1] &lt;= runLen[n] + runLen[n + 1]) {
+            if (runLen[n - 1] &lt; runLen[n + 1])
+                n--;
+            mergeAt(n);
+        } else if (runLen[n] &lt;= runLen[n + 1]) {
+            mergeAt(n);
+        } else {
+            break; // Invariant is established
+        }
+    }
+}
+</code></pre>
+<p>出于性能原因，Timsort 要维护尽可能少的 run。因此在每次新的 <code>run</code> 入栈时，会运行 <code>mergeCollapse</code> 函数合并栈顶 3 个元素,又因为每次入栈都会执行，所以栈中所有 run 的长度都满足以下两个条件：</p>
+<ol>
+<li>runLen[n - 2] &gt; runLen[n - 1] + runLen[n]</li>
+<li>runLen[n - 1] &gt; runLen[n]</li>
+</ol>
+<p>如果不满足规则 1，则将 run[n - 1] 与 run[n] 和 run[n - 2] 较短的合并。例如，runs 中存在两个长度分别为 12 和 7 的 run，此时入栈一个长度为 6 的run，则合并长度为 7 和 6 两个 run，栈变为 [12, 13]。
+如果不满足规则 2，则将 run[n - 1] 与 run[n] 合并。如上面的例子，继续合并 12 和 13，此时 runs 中仅剩一个长度为 25 的 run。就可以继续执行 Timsort 算法的第一步和第二步构造新的 run 或完成排序。</p>
+<p>但问题在哪呢？考虑一个例子：</p>
+<pre><code>120, 80, 25, 20, 30
+</code></pre>
+<p>因为 25 &lt; 20 + 30， 所以合并为</p>
+<pre><code>120, 80, 45, 30
+</code></pre>
+<p>此时， <code>120, 80, 45</code> 已经不满足规则。这个bug在<a href="http://www.envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it">这里</a>有更为详细的描述以及解决方法。</p>
+<h2 id="不稳定排序-pdqsort"><a class="header" href="#不稳定排序-pdqsort">不稳定排序： pdqsort</a></h2>
+<p>todo</p>
+<h2 id="ref"><a class="header" href="#ref">Ref</a></h2>
+<ul>
+<li>Timsort: <a href="https://github.com/python/cpython/blob/main/Objects/listsort.txt">https://github.com/python/cpython/blob/main/Objects/listsort.txt</a></li>
+<li>OpenJDK’s java.utils.Collection.sort() is broken: The good, the bad and the worst case: <a href="http://envisage-project.eu/timsort-specification-and-verification/">http://envisage-project.eu/timsort-specification-and-verification/</a></li>
+<li>Proving that Android’s, Java’s and Python’s sorting algorithm is broken (and showing how to fix it): <a href="http://www.envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it/">http://www.envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it/</a></li>
+<li>Java bug track: <a href="https://bugs.openjdk.org/browse/JDK-8072909">https://bugs.openjdk.org/browse/JDK-8072909</a></li>
+</ul>
+
+
+                        <!-- 公众号 -->
+                        <hr>
+                                                <div id="giscus-container"></div>
+                        <footer class="page-footer">
+                            <span>© 2022 | <a href="https://github.com/awesome-kusion/rust-code-book"> Rust Source Code Analysis</a>, Only for study and communication</span>
+                        </footer>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../stdlib/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rustc/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../stdlib/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rustc/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "stdlib/sort/index.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+                <script type="text/javascript" src="../../js/custom.js"></script>
+                <script type="text/javascript" src="../../js/bigPicture.js"></script>
+        
+        
+    </body>
+</html>

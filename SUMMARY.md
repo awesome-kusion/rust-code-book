@@ -3,6 +3,7 @@
 
 - [Intro](intro/readme.md)
 - [Standard Library](stdlib/readme.md)
+  - [Sort: Timsort and pdqsort[WIP: Zh-ver.]](stdlib/sort/readme.md)
 - [Rust Compiler](rustc/readme.md)
   - [Overview](rustc/overview/readme.md)
   - [Invocation](rustc/invocation/readme.md)
@@ -28,7 +29,7 @@
       - [MIR Optimized](rustc/sema/mir-lowering/mir-optimized/readme.md) -->
   - [Codegen](rustc/codegen/readme.md)
   - [General](rustc/general/readme.md)
-    - [Errors[WIP:Zh ver.]](rustc/general/errors/readme.md)
+    - [Errors[WIP: Zh-ver.]](rustc/general/errors/readme.md)
     - [SourceMap & Span[WIP]](rustc/general/sourcemap-span/readme.md)
 
 - [Rust Tools](rust-tools/readme.md)

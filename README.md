@@ -30,6 +30,7 @@ Target: Analysis and learn from the source code of Rust standard library, Rust c
 
 - [Intro](intro/readme.md)
 - [Standard Library](stdlib/readme.md)
+  - [Sort: Timsort and pdqsort[WIP: Zh-ver.]](stdlib/sort/readme.md) &#x1F552;
 - [Rust Compiler](rustc/readme.md)
   - [Overview](rustc/overview/readme.md)
   - [Invocation](rustc/invocation/readme.md)
@@ -55,7 +56,7 @@ Target: Analysis and learn from the source code of Rust standard library, Rust c
       - [MIR Optimized](rustc/sema/mir-lowering/mir-optimized/readme.md) -->
   - [Codegen](rustc/codegen/readme.md)
   - [General](rustc/general/readme.md)
-    - [Errors[WIP]](rustc/general/errors/readme.md)  &#x1F552;
+    - [Errors[WIP: Zh-ver.]](rustc/general/errors/readme.md)  &#x1F552;
     - [SourceMap & Span[WIP]](rustc/general/sourcemap-span/readme.md)  &#x1F552;
 
 - [Rust Tools](rust-tools/readme.md)

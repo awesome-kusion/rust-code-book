@@ -28,7 +28,7 @@
       - [MIR Optimized](rustc/sema/mir-lowering/mir-optimized/readme.md) -->
   - [Codegen](rustc/codegen/readme.md)
   - [General](rustc/general/readme.md)
-    - [Errors[WIP]](rustc/general/errors/readme.md)
+    - [Errors[WIP:Zh ver.]](rustc/general/errors/readme.md)
     - [SourceMap & Span[WIP]](rustc/general/sourcemap-span/readme.md)
 
 - [Rust Tools](rust-tools/readme.md)

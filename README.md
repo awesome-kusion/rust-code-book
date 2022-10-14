@@ -71,7 +71,7 @@ Target: Analysis and learn from the source code of Rust standard library, Rust c
 
 [![Star History Chart](https://api.star-history.com/svg?repos=awesome-kusion/rust-code-book&type=Date)](https://star-history.com/#awesome-kusion/rust-code-book&Date)
 
-- Twitter: [He1pa](https://twitter.com/ZhengZh79945795)
-- Wechat QR code:
 
-![wechat](wechat.png)
+Welcome to contact us in following ways:
+- Slack: https://join.slack.com/t/rustcodebook/shared_invite/zt-1htuqzkf9-45i6FO1L~ihwnmbGGh7QEw
+- Twitter: [He1pa](https://twitter.com/ZhengZh79945795)
